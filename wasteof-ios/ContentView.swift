@@ -193,7 +193,36 @@ struct ContentView: View {
     @State var checked = false
     @StateObject var loginProps: LoginProps = LoginProps()
     @ObservedObject var session: Session = Session()
-    @ObservedObject var feed: FeedObject = FeedObject()
+    var profileColor: Color {
+        switch session.color {
+        case "red":
+            return Color.red
+        case "orange":
+            return Color.orange
+        case "yellow":
+            return Color.yellow
+        case "green":
+            return Color.green
+        case "teal":
+            return Color.teal
+        case "blue":
+            return Color.blue
+        case "indigo":
+            return Color.indigo
+        case "violet":
+            return Color.purple
+        case "fuchsia":
+            return Color.pink
+        case "pink":
+            return Color.pink
+        case "gray":
+            return Color.gray
+        case "rainbow":
+            return Color.gray
+        default:
+            return Color.green
+        }
+    }
     var body: some View {
         if checked {
             if session.name != "" && session.token != "" && loginProps.loggedIn && loginProps.hasCredentials {
@@ -216,7 +245,7 @@ struct ContentView: View {
                             }
                         }
                 } else {
-                    UserPreview(name: session.name, id: session.id, bio: session.bio, verified: session.verified, beta: session.beta, permissions: session.permissions, links: session.links, history: session.history, stats: ExploreStats(followers: session.stats.followers), color: session.color)
+                    Homescreen().environmentObject(session).tint(profileColor)
                 }
             } else {
                 Login().environmentObject(session).environmentObject(loginProps)

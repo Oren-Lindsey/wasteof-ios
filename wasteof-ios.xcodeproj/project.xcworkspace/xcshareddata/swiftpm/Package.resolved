@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "markupeditor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stevengharris/MarkupEditor",
+      "state" : {
+        "revision" : "b23bad6de3d8cb09d719bc711928a6d1f1e945c6",
+        "version" : "0.6.0"
+      }
+    },
+    {
+      "identity" : "richtext",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NuPlay/RichText",
+      "state" : {
+        "revision" : "ff468d18b066ea5838a2d3f9cb572d55b8ebdb11",
+        "version" : "2.3.0"
+      }
+    }
+  ],
+  "version" : 2
+}
