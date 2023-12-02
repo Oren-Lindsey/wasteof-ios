@@ -163,11 +163,40 @@ func fetchUsers(callback: (([ExploreUser]) -> ())? = nil) {
     }
     task.resume()
 }
+func fetchMessages(token: String, page: Int, read: Bool, callback: ((MessagesObject) -> ())? = nil) {
+    guard let url = URL(string: "https://api.wasteof.money/messages/\(read ? "read" : "unread")?page=\(page)") else {
+        return
+    }
+    let requestUrl = url
+    var request = URLRequest(url: requestUrl)
+    //var result: String = ""
+    request.httpMethod = "GET"
+    request.addValue(token, forHTTPHeaderField: "Authorization")
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    let task = URLSession.shared.dataTask(with: request) { data, _, error in
+        guard let data = data, error == nil else {
+            print("error with the data: \(error!)")
+            return
+        }
+        do {
+            let api = try JSONDecoder().decode(MessagesObject.self, from:data)
+            DispatchQueue.main.async {
+                callback!(api)
+            }
+        } catch {
+            print("error decoding: \(error)")
+            print(String(data:data, encoding:.utf8)!)
+        }
+    }
+    //print("fetching")
+    task.resume()
+}
 struct Homescreen: View {
     @EnvironmentObject var session: Session
     @ObservedObject var feed: FeedObject = FeedObject()
     @ObservedObject var explore: ExploreObject = ExploreObject()
     @ObservedObject var exploreusers: ExploreUsersObject = ExploreUsersObject()
+    @ObservedObject var messagesState: MessagesStateObject = MessagesStateObject()
     @State var page = 1
     var body: some View {
         if feed.posts.count < 1 {
@@ -184,6 +213,13 @@ struct Homescreen: View {
                     fetchUsers() { usersobject in
                         exploreusers.users = usersobject
                     }
+                    fetchMessages(token: session.token, page: 1, read: false) { messages in
+                        let messagesArray = messages.unread ?? []
+                        if messagesArray.count > 0 {
+                            messagesState.unread = messagesArray
+                        }
+                        messagesState.last = messages.last
+                    }
                 }
             }
         } else {
@@ -194,6 +230,9 @@ struct Homescreen: View {
                 Explore(explore: explore, exploreusers: exploreusers).tabItem {
                     Label("Explore", systemImage: "globe")
                 }.environmentObject(session)
+                Messages(messagesState: messagesState, page: 1).environmentObject(session).tabItem {
+                    Label("\(messagesState.unread.count) Messages", systemImage: messagesState.unread.count > 0 ? "envelope.badge" : "envelope")
+                }
                 
             }
             /*NavigationStack {
