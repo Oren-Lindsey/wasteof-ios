@@ -255,7 +255,7 @@ struct Homescreen: View {
                     }
                 }
             }.toast(isPresenting: $showPopup){
-                AlertToast(displayMode: .hud, type: .regular, title: "Posted!")
+                AlertToast(displayMode: .hud, type: .systemImage("checkmark.bubble", .accentColor), title: "Posted!")
             }
         }
     }

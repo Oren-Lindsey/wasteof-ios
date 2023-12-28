@@ -152,7 +152,7 @@ struct Post: View, MarkupDelegate {
             }
         }.refreshable {
             fetchCommentsOnPost(id: _id, add: false, page: currentpage)
-        }.navigationTitle("Post by @\(poster.name)")
+        }.navigationTitle("Post by @\(poster.name)").padding([.horizontal], 8)
     }
     func fetchCommentsOnPost(id: String, add: Bool, page: Int) {
     guard let url = URL(string: "https://api.wasteof.money/posts/\(id)/comments?page=\(page)") else {
