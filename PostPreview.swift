@@ -11,7 +11,7 @@ struct PostPreview: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var session: Session
     let _id: String
-    @State var content: String
+    var content: String
     let time: Int
     let comments: Int
     @State var loves: Int

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AlertToast
 class ExploreObject: ObservableObject {
     @Published var posts: [ExplorePostType]
     @Published var since: String
@@ -192,6 +193,8 @@ func fetchMessages(token: String, page: Int, read: Bool, callback: ((MessagesObj
     task.resume()
 }
 struct Homescreen: View {
+    @State var newPostId = ""
+    @State var showPopup = false
     @EnvironmentObject var session: Session
     @ObservedObject var feed: FeedObject = FeedObject()
     @ObservedObject var explore: ExploreObject = ExploreObject()
@@ -206,51 +209,54 @@ struct Homescreen: View {
                         feed.posts += feedObject.posts
                         feed.last = feedObject.last
                     }
-                    fetchExplore(timeframe: "day") { exploreobject in
-                        explore.posts = exploreobject.posts
-                        explore.since = exploreobject.since
+                }
+                fetchExplore(timeframe: "day") { exploreobject in
+                    explore.posts = exploreobject.posts
+                    explore.since = exploreobject.since
+                }
+                fetchUsers() { usersobject in
+                    exploreusers.users = usersobject
+                }
+                fetchMessages(token: session.token, page: 1, read: false) { messages in
+                    let messagesArray = messages.unread ?? []
+                    if messagesArray.count > 0 {
+                        messagesState.unread = messagesArray
                     }
-                    fetchUsers() { usersobject in
-                        exploreusers.users = usersobject
-                    }
-                    fetchMessages(token: session.token, page: 1, read: false) { messages in
-                        let messagesArray = messages.unread ?? []
-                        if messagesArray.count > 0 {
-                            messagesState.unread = messagesArray
-                        }
-                        messagesState.last = messages.last
-                    }
+                    messagesState.last = messages.last
                 }
             }
         } else {
-            TabView {
-                Feed(feed: feed, page: page).tabItem {
-                    Label("Home", systemImage: "house")
-                }.environmentObject(session)
-                Explore(explore: explore, exploreusers: exploreusers).tabItem {
-                    Label("Explore", systemImage: "globe")
-                }.environmentObject(session)
-                Messages(messagesState: messagesState, page: 1).environmentObject(session).tabItem {
-                    Label("\(messagesState.unread.count) Messages", systemImage: messagesState.unread.count > 0 ? "envelope.badge" : "envelope")
+            ZStack {
+                TabView {
+                    Feed(feed: feed, page: page).tabItem {
+                        Label("Home", systemImage: "house")
+                    }.environmentObject(session)
+                    Explore(explore: explore, exploreusers: exploreusers).tabItem {
+                        Label("Explore", systemImage: "globe")
+                    }.environmentObject(session)
+                    Messages(messagesState: messagesState, page: 1).environmentObject(session).tabItem {
+                        Label("Messages", systemImage: "envelope")
+                    }.badge(messagesState.unread.count)
+                    
                 }
-                
-            }
-            /*NavigationStack {
-                ScrollView {
-                    ForEach(feed.posts.indices, id: \.self) { i in
-                        let post = feed.posts[i]
-                        NavigationLink {
-                            Text(post.poster.name)
-                        } label: {
-                            Text(post.content)
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        PostEditor(newid: $newPostId).environmentObject(session)
+                    }.padding().padding([.bottom],50)
+                }.onChange(of: newPostId) {
+                    showPopup.toggle()
+                    fetchFeed(user: session.name, page: page) { (feedObject) in
+                        DispatchQueue.main.async {
+                            feed.posts = feedObject.posts
+                            feed.last = feedObject.last
                         }
                     }
                 }
-            }*/
+            }.toast(isPresenting: $showPopup){
+                AlertToast(displayMode: .hud, type: .regular, title: "Posted!")
+            }
         }
     }
 }
-
-/*#Preview {
-    Homescreen()
-}*/

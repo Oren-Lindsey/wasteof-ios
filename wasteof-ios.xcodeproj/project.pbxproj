@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B37F59B02B3DFE5B00C03641 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B37F59AF2B3DFE5B00C03641 /* AlertToast */; };
 		B3A914132B12401D009BC911 /* wasteof_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A914122B12401D009BC911 /* wasteof_iosApp.swift */; };
 		B3A914152B12401D009BC911 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A914142B12401D009BC911 /* ContentView.swift */; };
 		B3A914172B12401E009BC911 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3A914162B12401E009BC911 /* Assets.xcassets */; };
@@ -28,6 +29,7 @@
 		B3BC35D02B1A88AA00CB5247 /* CommentEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BC35CF2B1A88AA00CB5247 /* CommentEditor.swift */; };
 		B3BC35D22B1A8D3A00CB5247 /* Explore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BC35D12B1A8D3A00CB5247 /* Explore.swift */; };
 		B3BC35D42B1A979000CB5247 /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BC35D32B1A979000CB5247 /* Messages.swift */; };
+		B3BC35D62B1B95D500CB5247 /* PostEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BC35D52B1B95D500CB5247 /* PostEditor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +73,7 @@
 		B3BC35CF2B1A88AA00CB5247 /* CommentEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentEditor.swift; sourceTree = "<group>"; };
 		B3BC35D12B1A8D3A00CB5247 /* Explore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Explore.swift; sourceTree = "<group>"; };
 		B3BC35D32B1A979000CB5247 /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
+		B3BC35D52B1B95D500CB5247 /* PostEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostEditor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B37F59B02B3DFE5B00C03641 /* AlertToast in Frameworks */,
 				B3A9144D2B13EA13009BC911 /* RichText in Frameworks */,
 				B3BC35CC2B1A882C00CB5247 /* MarkupEditor in Frameworks */,
 			);
@@ -103,6 +107,7 @@
 		B3A914062B12401D009BC911 = {
 			isa = PBXGroup;
 			children = (
+				B3BC35D52B1B95D500CB5247 /* PostEditor.swift */,
 				B3BC35D32B1A979000CB5247 /* Messages.swift */,
 				B3BC35D12B1A8D3A00CB5247 /* Explore.swift */,
 				B3BC35CF2B1A88AA00CB5247 /* CommentEditor.swift */,
@@ -188,6 +193,7 @@
 			packageProductDependencies = (
 				B3A9144C2B13EA13009BC911 /* RichText */,
 				B3BC35CB2B1A882C00CB5247 /* MarkupEditor */,
+				B37F59AF2B3DFE5B00C03641 /* AlertToast */,
 			);
 			productName = "wasteof-ios";
 			productReference = B3A9140F2B12401D009BC911 /* wasteof-ios.app */;
@@ -237,7 +243,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					B3A9140E2B12401D009BC911 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -264,6 +270,7 @@
 			packageReferences = (
 				B3A9144B2B13EA13009BC911 /* XCRemoteSwiftPackageReference "RichText" */,
 				B3BC35CA2B1A882C00CB5247 /* XCRemoteSwiftPackageReference "MarkupEditor" */,
+				B37F59AE2B3DFE5A00C03641 /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = B3A914102B12401D009BC911 /* Products */;
 			projectDirPath = "";
@@ -320,6 +327,7 @@
 				B3A914402B126E32009BC911 /* Login.swift in Sources */,
 				B3A914442B12B187009BC911 /* UserPreview.swift in Sources */,
 				B3A914462B12B361009BC911 /* Homescreen.swift in Sources */,
+				B3BC35D62B1B95D500CB5247 /* PostEditor.swift in Sources */,
 				B3BC35C92B1A880900CB5247 /* Post.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -391,6 +399,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -452,6 +461,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -479,6 +489,7 @@
 				CODE_SIGN_ENTITLEMENTS = "wasteof-ios/wasteof_ios.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"wasteof-ios/Preview Content\"";
 				DEVELOPMENT_TEAM = W86G9JBU27;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -517,6 +528,7 @@
 				CODE_SIGN_ENTITLEMENTS = "wasteof-ios/wasteof_ios.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"wasteof-ios/Preview Content\"";
 				DEVELOPMENT_TEAM = W86G9JBU27;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -554,6 +566,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = W86G9JBU27;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -577,6 +590,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = W86G9JBU27;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -599,6 +613,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = W86G9JBU27;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -621,6 +636,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = W86G9JBU27;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -679,6 +695,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B37F59AE2B3DFE5A00C03641 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		B3A9144B2B13EA13009BC911 /* XCRemoteSwiftPackageReference "RichText" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/NuPlay/RichText";
@@ -698,6 +722,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B37F59AF2B3DFE5B00C03641 /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B37F59AE2B3DFE5A00C03641 /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
+		};
 		B3A9144C2B13EA13009BC911 /* RichText */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B3A9144B2B13EA13009BC911 /* XCRemoteSwiftPackageReference "RichText" */;

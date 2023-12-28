@@ -389,7 +389,7 @@ struct Messages: View {
             let messageid = messagesState.unread[n]._id
             let messageState = messagesState.unread[n].read
             messagesState.unread.remove(at: n)
-            let oldCount = messagesState.unread.count
+            //let oldCount = messagesState.unread.count
             markMessage(id: messageid, token: session.token, read: !messageState)
             /*if messagesState.unread.count < 14 && oldCount > 14 {
                 fetchMessages(token: session.token, page: 1, add: false)
