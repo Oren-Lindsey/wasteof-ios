@@ -7,6 +7,7 @@
 
 import SwiftUI
 import RichText
+import AlertToast
 struct PostPreview: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var session: Session
@@ -29,6 +30,9 @@ struct PostPreview: View {
     @State var dateShown = false
     @State var loved = false //hook this up to the api
     @State var showingEdits = false
+    @State var newPostId = ""
+    @State var showPopup = false
+    @State var showPinPopup = false
     var body: some View {
         let posttime: Date = Date(timeIntervalSince1970: TimeInterval(time / 1000))
         let pictureurl = URL(string: "https://api.wasteof.money/users/\(poster.name)/picture")
@@ -94,19 +98,21 @@ struct PostPreview: View {
                         Text("@\(poster.name)").tint(colorScheme == .light ? Color.black: Color.white)
                             .font(.title2)
                         Spacer()
-                        HStack {
-                            Text(dateShown ? posttime.description(with: userLocale) : posttime.formatted(date: .numeric, time: .shortened))
-                                .onTapGesture {
-                                    dateShown.toggle()
-                                    if dateShown {
-                                        let pasteboard = UIPasteboard.general
-                                        pasteboard.string = posttime.description(with: userLocale)
-                                     
-                                     }
-                                }
-                                .font(Font.body.italic())
-                                .foregroundColor(.secondary)
-                        }//.padding()
+                        VStack {
+                            HStack {
+                                Text(dateShown ? posttime.description(with: userLocale) : posttime.formatted(date: .numeric, time: .shortened))
+                                    .onTapGesture {
+                                        dateShown.toggle()
+                                        if dateShown {
+                                            let pasteboard = UIPasteboard.general
+                                            pasteboard.string = posttime.description(with: userLocale)
+                                            
+                                        }
+                                    }
+                                    .font(Font.body.italic())
+                                    .foregroundColor(.secondary)
+                            }//.padding()
+                        }
                     }
                     RichText(html: content).multilineTextAlignment(.leading)
                     if repost != nil {
@@ -133,7 +139,6 @@ struct PostPreview: View {
                     //.padding([.bottom])
                     if revisions.count > 1 {
                         HStack {
-                            /*Text("Edited at \(edittime.formatted(date: .numeric, time: .shortened))")*/
                             Button {
                                 showingEdits = true
                             } label: {
@@ -172,19 +177,31 @@ struct PostPreview: View {
                             //Spacer()
                             loveButton
                             CommentEditor(id: _id, color: profileColor, parent: nil, poster: CommentPoster(name: poster.name, id: poster.id, color: nil), type: String(comments))
-                            Button {
-                            } label: {
-                                VStack {
-                                    Image(systemName: "repeat")
-                                    Text("\(reposts)")
-                                }
-                            }.tint(profileColor).buttonStyle(.bordered)
+                            PostEditor(newid: $newPostId, type: "repost", reposts: reposts, postId: _id, customColor: profileColor).environmentObject(session)
                             Spacer()
+                        }.onChange(of: newPostId) {
+                            showPopup.toggle()
+                            print("Posted successfully")
+                        }.toast(isPresenting: $showPopup) {
+                            AlertToast(displayMode: .hud, type: .systemImage("checkmark.bubble", .accentColor), title: "Posted!") // this doesn't show, and i can't figure out why :(
+                        }.toast(isPresenting: $showPinPopup) {
+                            AlertToast(displayMode: .hud, type: .systemImage("checkmark.bubble", .accentColor), title: "Pinned!") // this doesn't show either
                         }
                         Spacer()
                             .frame(width: 5)
                         Menu {
                             ShareLink(item: URL(string: "https://wasteof.money/posts/\(_id)")!, message: Text("Post by @\(poster.name)"))
+                            if session.name == poster.name {
+                                Button {
+                                    pinPost(_id: _id, token: session.token) { (res) in
+                                        if res {
+                                            showPinPopup.toggle()
+                                        }
+                                    }
+                                } label: {
+                                    Label("Pin to Profile", systemImage: "pin")
+                                }
+                            }
                             Button(role: .destructive) {
                                 reportReasonShowing = true
                             } label: {
@@ -366,6 +383,23 @@ func lovePost(_id: String, token: String, callback: ((LoveResponse) -> ())? = ni
                     print(jsonData)
                 }
             }
+        }
+    }
+    task.resume()
+}
+func pinPost(_id: String, token: String, callback: ((Bool) -> ())? = nil) {
+    let url = URL(string: "https://api.wasteof.money/posts/\(_id)/pin")
+    guard let requestUrl = url else { fatalError() }
+    var request = URLRequest(url: requestUrl)
+    request.httpMethod = "POST"
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.addValue(token, forHTTPHeaderField: "Authorization")
+    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        if let error = error {
+            print("Error took place \(error)")
+            callback!(false)
+        } else {
+            callback!(true)
         }
     }
     task.resume()

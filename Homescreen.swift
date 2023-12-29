@@ -243,7 +243,7 @@ struct Homescreen: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        PostEditor(newid: $newPostId).environmentObject(session)
+                        PostEditor(newid: $newPostId, type: "main", reposts: 0, postId: nil, customColor: .accentColor).environmentObject(session)
                     }.padding().padding([.bottom],50)
                 }.onChange(of: newPostId) {
                     showPopup.toggle()

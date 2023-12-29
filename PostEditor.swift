@@ -18,6 +18,10 @@ struct PostEditor: View, MarkupDelegate {
     @State var startHtml = ""
     @State var currenthtml = ""
     @Binding var newid: String
+    var type: String
+    var reposts: Int
+    var postId: Optional<String>
+    var customColor: Color
     var profileColor: Color {
         switch session.color {
         case "red":
@@ -58,15 +62,30 @@ struct PostEditor: View, MarkupDelegate {
             print(html!)
         }
     }*/
+    var normalButton: Bool {
+        return type == "main"
+    }
     var body: some View {
-        Button {
-            showingEditor.toggle()
-        } label: {
-            Text("+").frame(width: 50, height: 50)
-        }.buttonStyle(.borderedProminent).clipShape(Circle()).popover(isPresented: $showingEditor) {
-            editor
+        if type == "main" {
+            Button {
+                showingEditor.toggle()
+            } label: {
+                Text("+").frame(width: 50, height: 50)
+            }.popover(isPresented: $showingEditor) {
+                editor
+            }.buttonStyle(.borderedProminent).clipShape(Circle())
+        } else if type == "repost" {
+            Button {
+                showingEditor.toggle()
+            } label: {
+                VStack {
+                    Image(systemName: "repeat")
+                    Text("\(reposts)")
+                }
+            }.popover(isPresented: $showingEditor) {
+                editor
+            }.tint(customColor).buttonStyle(.bordered)
         }
-        
     }
     @ViewBuilder private var editor: some View {
         VStack {
@@ -78,7 +97,7 @@ struct PostEditor: View, MarkupDelegate {
                 }.tint(profileColor)
                 Spacer()
                 Button {
-                    post(token: session.token, content: currenthtml, repost: nil) { (id) in
+                    post(token: session.token, content: currenthtml, repost: postId) { (id) in
                         newid = id
                         showingEditor.toggle()
                     }
@@ -98,22 +117,13 @@ struct PostEditor: View, MarkupDelegate {
         var request = URLRequest(url: requestUrl)
         request.httpMethod = "POST"
         struct BodyData: Codable {
-            // Define your data model here.
-            // This struct should conform to Codable if you want to send it in the request body.
             let post: String
             let repost: Optional<String>?
         }
         struct PostResponse: Codable {
-            // Define your data model here.
-            // This struct should conform to Codable if you want to send it in the request body.
             let ok: String
             let id: String
         }
-        //let postString = "username=\(username)&password=\(password)"
-        /*struct LoginData: Hashable, Codable {
-            let username: String
-            let password: String
-        }*/
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue(token, forHTTPHeaderField: "Authorization")
         let body = BodyData(post: content, repost: repost)
