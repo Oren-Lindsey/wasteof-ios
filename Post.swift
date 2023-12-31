@@ -97,6 +97,7 @@ struct Post: View, MarkupDelegate {
     }
     @EnvironmentObject var session: Session
     @State var currentpage = 1
+    var pinType: Bool
     /*@State var currenthtml: String = ""
      @State var startHtml: String = ""*/
     /*init() {
@@ -112,7 +113,7 @@ struct Post: View, MarkupDelegate {
     var body: some View {
         ScrollView {
             VStack {
-                PostPreview(_id: _id, content: content, time: time, comments: comments, loves: loves, reposts: reposts, poster: poster, revisions: revisions, edited: edited, repost: repost, navigation: true, recursion: 0).environmentObject(session).padding([.bottom],1)
+                PostPreview(_id: _id, content: content, time: time, comments: comments, loves: loves, reposts: reposts, poster: poster, revisions: revisions, edited: edited, repost: repost, navigation: true, pinType: pinType, recursion: 0).environmentObject(session).padding([.bottom],1)
                 Divider()
             }
             HStack{

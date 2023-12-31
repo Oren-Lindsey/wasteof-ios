@@ -28,9 +28,9 @@ struct Explore: View {
                     ForEach(explore.posts.indices, id: \.self) { i in
                         let post = explore.posts[i]
                         NavigationLink {
-                            Post(commentsState: CommentsObject(), _id: post._id, content: post.content, time: post.time, comments: post.comments, loves: post.loves, reposts: post.reposts, poster: post.poster, revisions: post.revisions, repost: post.repost)
+                            Post(commentsState: CommentsObject(), _id: post._id, content: post.content, time: post.time, comments: post.comments, loves: post.loves, reposts: post.reposts, poster: post.poster, revisions: post.revisions, repost: post.repost, pinType: true)
                         } label: {
-                            PostPreview(_id: post._id, content: post.content, time: post.time, comments: post.comments, loves: post.loves, reposts: post.reposts, poster: Poster(name: post.poster.name, id: post.poster.id, color: post.poster.color), revisions: post.revisions, edited: post.edited, repost: post.repost, navigation: true, recursion: 1).environmentObject(session).frame(minHeight: 100)
+                            PostPreview(_id: post._id, content: post.content, time: post.time, comments: post.comments, loves: post.loves, reposts: post.reposts, poster: Poster(name: post.poster.name, id: post.poster.id, color: post.poster.color), revisions: post.revisions, edited: post.edited, repost: post.repost, navigation: true, pinType: true, recursion: 1).environmentObject(session).frame(minHeight: 100)
                         }
                     }.padding([.horizontal], 8)
                 }
@@ -46,12 +46,22 @@ struct Explore: View {
                     }
                     let exploreusers = exploreusers
                     VStack {
-                        ForEach(exploreusers.users.indices, id: \.self) { i in
-                            if i == exploreusers.users.count - 1 {
-                                UserPreview(name: exploreusers.users[i].name, id: exploreusers.users[i].id, bio: exploreusers.users[i].bio, verified: exploreusers.users[i].verified, beta: exploreusers.users[i].beta, permissions: exploreusers.users[i].permissions, links: exploreusers.users[i].links, history: exploreusers.users[i].history, stats: exploreusers.users[i].stats, color: exploreusers.users[i].color)
-                                    .padding([.bottom], 96)
-                            } else {
-                                UserPreview(name: exploreusers.users[i].name, id: exploreusers.users[i].id, bio: exploreusers.users[i].bio, verified: exploreusers.users[i].verified, beta: exploreusers.users[i].beta, permissions: exploreusers.users[i].permissions, links: exploreusers.users[i].links, history: exploreusers.users[i].history, stats: exploreusers.users[i].stats, color: exploreusers.users[i].color)//.padding([.horizontal], 16)
+                        NavigationStack {
+                            ForEach(exploreusers.users.indices, id: \.self) { i in
+                                if i == exploreusers.users.count - 1 {
+                                    NavigationLink {
+                                        User(name: exploreusers.users[i].name, navigationType: "stack").environmentObject(session)
+                                    } label: {
+                                        UserPreview(name: exploreusers.users[i].name, id: exploreusers.users[i].id, bio: exploreusers.users[i].bio, verified: exploreusers.users[i].verified, beta: exploreusers.users[i].beta, permissions: exploreusers.users[i].permissions, links: exploreusers.users[i].links, history: exploreusers.users[i].history, stats: exploreusers.users[i].stats, color: exploreusers.users[i].color)
+                                            .padding([.bottom], 96)
+                                    }.buttonStyle(PlainButtonStyle())
+                                } else {
+                                    NavigationLink {
+                                        User(name: exploreusers.users[i].name, navigationType: "stack").environmentObject(session)
+                                    } label: {
+                                        UserPreview(name: exploreusers.users[i].name, id: exploreusers.users[i].id, bio: exploreusers.users[i].bio, verified: exploreusers.users[i].verified, beta: exploreusers.users[i].beta, permissions: exploreusers.users[i].permissions, links: exploreusers.users[i].links, history: exploreusers.users[i].history, stats: exploreusers.users[i].stats, color: exploreusers.users[i].color)
+                                    }.buttonStyle(PlainButtonStyle())
+                                }
                             }
                         }
                     }.padding([.horizontal], 8)

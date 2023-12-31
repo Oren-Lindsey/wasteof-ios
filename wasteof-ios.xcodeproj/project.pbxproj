@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B30872732B40763500956C4A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30872722B40763500956C4A /* User.swift */; };
 		B37F59B02B3DFE5B00C03641 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B37F59AF2B3DFE5B00C03641 /* AlertToast */; };
 		B3A914132B12401D009BC911 /* wasteof_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A914122B12401D009BC911 /* wasteof_iosApp.swift */; };
 		B3A914152B12401D009BC911 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A914142B12401D009BC911 /* ContentView.swift */; };
@@ -50,6 +51,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B30872722B40763500956C4A /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B3A9140F2B12401D009BC911 /* wasteof-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "wasteof-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3A914122B12401D009BC911 /* wasteof_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = wasteof_iosApp.swift; sourceTree = "<group>"; };
 		B3A914142B12401D009BC911 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 		B3A914062B12401D009BC911 = {
 			isa = PBXGroup;
 			children = (
+				B30872722B40763500956C4A /* User.swift */,
 				B3BC35D52B1B95D500CB5247 /* PostEditor.swift */,
 				B3BC35D32B1A979000CB5247 /* Messages.swift */,
 				B3BC35D12B1A8D3A00CB5247 /* Explore.swift */,
@@ -318,6 +321,7 @@
 				B3A9143E2B126BB0009BC911 /* Types.swift in Sources */,
 				B3A9144A2B13E529009BC911 /* PostPreview.swift in Sources */,
 				B3BC35D42B1A979000CB5247 /* Messages.swift in Sources */,
+				B30872732B40763500956C4A /* User.swift in Sources */,
 				B3A914482B1390C0009BC911 /* Feed.swift in Sources */,
 				B3BC35CE2B1A885700CB5247 /* CommentPreview.swift in Sources */,
 				B3BC35D22B1A8D3A00CB5247 /* Explore.swift in Sources */,

@@ -22,6 +22,7 @@ struct PostPreview: View {
     let edited: Optional<Int>
     let repost: Optional<PostType>
     let navigation: Bool
+    let pinType: Bool
     @State var recursion: Int
     @State private var isPresentingConfirm: Bool = false
     @State var deleted = false
@@ -71,32 +72,40 @@ struct PostPreview: View {
             ScrollView {
                 VStack {
                     HStack {
-                        AsyncImage(
-                            url: pictureurl,
-                            transaction: Transaction(animation: .easeInOut)
-                        ) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .transition(.scale(scale: 0.1, anchor: .center))
-                            case .failure:
-                                Image(systemName: "person.fill").tint(Color.black)
-                            @unknown default:
-                                EmptyView()
-                            }
+                        NavigationStack {
+                            NavigationLink {
+                                User(name: poster.name, navigationType: "stack").environmentObject(session)
+                            } label: {
+                                HStack {
+                                    AsyncImage(
+                                        url: pictureurl,
+                                        transaction: Transaction(animation: .easeInOut)
+                                    ) { phase in
+                                        switch phase {
+                                        case .empty:
+                                            ProgressView()
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .transition(.scale(scale: 0.1, anchor: .center))
+                                        case .failure:
+                                            Image(systemName: "person.fill").tint(Color.black)
+                                        @unknown default:
+                                            EmptyView()
+                                        }
+                                    }
+                                    .frame(width: 40, height: 40)
+                                    .background(Color.white)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(profileColor, lineWidth: 4)
+                                    )
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    Text("@\(poster.name)").tint(colorScheme == .light ? Color.black: Color.white)
+                                        .font(.title2)
+                                }.padding(6)
+                            }.buttonStyle(PlainButtonStyle()).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                         }
-                        .frame(width: 40, height: 40)
-                        .background(Color.white)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(profileColor, lineWidth: 4)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        Text("@\(poster.name)").tint(colorScheme == .light ? Color.black: Color.white)
-                            .font(.title2)
                         Spacer()
                         VStack {
                             HStack {
@@ -120,13 +129,13 @@ struct PostPreview: View {
                             if navigation {
                                 NavigationStack {
                                     NavigationLink {
-                                        Post(commentsState: CommentsObject(), _id: repost!._id, content: repost!.content, time: repost!.time, comments: repost!.comments, loves: repost!.loves, reposts: repost!.reposts, poster: repost!.poster, revisions: repost!.revisions, edited: repost?.edited, repost: repost?.repost).environmentObject(session)
+                                        Post(commentsState: CommentsObject(), _id: repost!._id, content: repost!.content, time: repost!.time, comments: repost!.comments, loves: repost!.loves, reposts: repost!.reposts, poster: repost!.poster, revisions: repost!.revisions, edited: repost?.edited, repost: repost?.repost, pinType: true).environmentObject(session)
                                     } label: {
-                                        PostPreview(_id: repost!._id, content: repost!.content, time: repost!.time, comments: repost!.comments, loves: repost!.loves, reposts: repost!.reposts, poster: repost!.poster, revisions: repost!.revisions, edited: repost?.edited, repost: repost?.repost, navigation: true, recursion: recursion + 1).environmentObject(session)
+                                        PostPreview(_id: repost!._id, content: repost!.content, time: repost!.time, comments: repost!.comments, loves: repost!.loves, reposts: repost!.reposts, poster: repost!.poster, revisions: repost!.revisions, edited: repost?.edited, repost: repost?.repost, navigation: true, pinType: true, recursion: recursion + 1).environmentObject(session)
                                     }
                                 }
                             } else {
-                                PostPreview(_id: repost!._id, content: repost!.content, time: repost!.time, comments: repost!.comments, loves: repost!.loves, reposts: repost!.reposts, poster: repost!.poster, revisions: repost!.revisions, edited: repost?.edited, repost: repost?.repost, navigation: false, recursion: recursion + 1).environmentObject(session)
+                                PostPreview(_id: repost!._id, content: repost!.content, time: repost!.time, comments: repost!.comments, loves: repost!.loves, reposts: repost!.reposts, poster: repost!.poster, revisions: repost!.revisions, edited: repost?.edited, repost: repost?.repost, navigation: false, pinType: true, recursion: recursion + 1).environmentObject(session)
                             }
                         } else {
                             Button {
@@ -192,14 +201,26 @@ struct PostPreview: View {
                         Menu {
                             ShareLink(item: URL(string: "https://wasteof.money/posts/\(_id)")!, message: Text("Post by @\(poster.name)"))
                             if session.name == poster.name {
-                                Button {
-                                    pinPost(_id: _id, token: session.token) { (res) in
-                                        if res {
-                                            showPinPopup.toggle()
+                                if pinType {
+                                    Button {
+                                        pinPost(_id: _id, token: session.token) { (res) in
+                                            if res {
+                                                showPinPopup.toggle()
+                                            }
                                         }
+                                    } label: {
+                                        Label("Pin to Profile", systemImage: "pin")
                                     }
-                                } label: {
-                                    Label("Pin to Profile", systemImage: "pin")
+                                } else {
+                                    Button {
+                                        unpinPost(_id: _id, token: session.token) { (res) in
+                                            if res {
+                                                showPinPopup.toggle()
+                                            }
+                                        }
+                                    } label: {
+                                        Label("Unpin from Profile", systemImage: "pin.slash")
+                                    }
                                 }
                             }
                             Button(role: .destructive) {
@@ -389,6 +410,23 @@ func lovePost(_id: String, token: String, callback: ((LoveResponse) -> ())? = ni
 }
 func pinPost(_id: String, token: String, callback: ((Bool) -> ())? = nil) {
     let url = URL(string: "https://api.wasteof.money/posts/\(_id)/pin")
+    guard let requestUrl = url else { fatalError() }
+    var request = URLRequest(url: requestUrl)
+    request.httpMethod = "POST"
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.addValue(token, forHTTPHeaderField: "Authorization")
+    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        if let error = error {
+            print("Error took place \(error)")
+            callback!(false)
+        } else {
+            callback!(true)
+        }
+    }
+    task.resume()
+}
+func unpinPost(_id: String, token: String, callback: ((Bool) -> ())? = nil) {
+    let url = URL(string: "https://api.wasteof.money/posts/\(_id)/unpin")
     guard let requestUrl = url else { fatalError() }
     var request = URLRequest(url: requestUrl)
     request.httpMethod = "POST"

@@ -17,9 +17,9 @@ struct Feed: View {
                 ForEach(feed.posts.indices, id: \.self) { i in
                     let post = feed.posts[i]
                     NavigationLink {
-                        Post(commentsState: CommentsObject(), _id: post._id, content: post.content, time: post.time, comments: post.comments, loves: post.loves, reposts: post.reposts, poster: post.poster, revisions: post.revisions, repost: post.repost)
+                        Post(commentsState: CommentsObject(), _id: post._id, content: post.content, time: post.time, comments: post.comments, loves: post.loves, reposts: post.reposts, poster: post.poster, revisions: post.revisions, repost: post.repost, pinType: true)
                     } label: {
-                        PostPreview(_id: post._id, content: post.content, time: post.time, comments: post.comments, loves: post.loves, reposts: post.reposts, poster: post.poster, revisions: post.revisions, edited: post.edited, repost: post.repost, navigation: true, recursion: 0).environmentObject(session)
+                        PostPreview(_id: post._id, content: post.content, time: post.time, comments: post.comments, loves: post.loves, reposts: post.reposts, poster: post.poster, revisions: post.revisions, edited: post.edited, repost: post.repost, navigation: true, pinType: true, recursion: 0).environmentObject(session)
                     }.background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 }
                 if !feed.last {

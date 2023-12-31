@@ -142,14 +142,7 @@ func fetchUsers(callback: (([ExploreUser]) -> ())? = nil) {
         do {
             let api = try JSONDecoder().decode([ExploreUser].self, from:data)
             DispatchQueue.main.async {
-                /*if add {
-                    self?.feed.last = api.last
-                    self?.feed.posts += api.posts
-                } else {
-                    self?.feed = api
-                }*/
                 callback!(api)
-                //print(api)
             }
         } catch {
             print(error)
@@ -237,7 +230,9 @@ struct Homescreen: View {
                     Messages(messagesState: messagesState, page: 1).environmentObject(session).tabItem {
                         Label("Messages", systemImage: "envelope")
                     }.badge(messagesState.unread.count)
-                    
+                    User(name: session.name, navigationType: "tab").tabItem {
+                        Label("Your Profile", systemImage: "person")
+                    }.environmentObject(session)
                 }
                 VStack {
                     Spacer()
