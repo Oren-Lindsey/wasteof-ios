@@ -62,7 +62,7 @@ struct UserDecoder: Hashable, Codable {
     var beta: Bool
     var color: String
     var links: [Link]
-    var history: History
+    var history: Optional<History>
     var stats: UserStats
     var online: Bool
 }
@@ -235,7 +235,7 @@ struct ContentView: View {
                                     session.beta = user.beta
                                     session.online = user.online
                                     session.color = user.color
-                                    session.history = user.history
+                                    session.history = user.history ?? History(joined: 0)
                                     session.id = user.id
                                     session.links = user.links
                                     session.permissions = user.permissions

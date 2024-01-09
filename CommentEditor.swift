@@ -8,7 +8,6 @@
 import SwiftUI
 import MarkupEditor
 struct CommentEditor: View, MarkupDelegate {
-    //let color: Color
     @EnvironmentObject var session: Session
     let id: String
     let color: Color
@@ -18,18 +17,6 @@ struct CommentEditor: View, MarkupDelegate {
     @State var currenthtml: String = ""
     @State private var startHtml: String = ""
     @State var editor = false
-    //@State private var startHtml: String = "<p>helloworld</p>"
-    /*init() {
-        MarkupEditor.style = .labeled
-        let myToolbarContents = ToolbarContents(
-            correction: true, formatContents: FormatContents(subSuper: false)
-        )
-        ToolbarContents.custom = myToolbarContents
-        MarkupEditor.selectedWebView?.getHtml { html in
-            print(html!)
-        }
-        print("ran")
-    }*/
     func markupInput(_ view: MarkupWKWebView) {
         MarkupEditor.selectedWebView?.getHtml { html in
             currenthtml = html!
@@ -77,56 +64,9 @@ struct CommentEditor: View, MarkupDelegate {
                 }
                 MarkupEditorView(markupDelegate: self, html: $startHtml)
             }.padding(5)
-            /*VStack {
-             HStack {
-             Button(role:.destructive) {
-             editor = false
-             } label: {
-             Text("Cancel").padding(3)
-             }
-             Spacer()
-             Text("New Comment")
-             .padding(3)
-             .font(.title2)
-             Spacer()
-             Button {
-             print("a")
-             } label: {
-             Text("Post")
-             .padding(3)
-             }
-             }
-             Text("Edit:")
-             .font(.title3)
-             MarkupEditorView(markupDelegate: self, html: $startHtml)*/
+            
         }.padding(5)//id: _id).environmentObject(session)
     }
-    /*@ViewBuilder var editorView: some View {
-        @State var startHtml = "<p> </p>"
-        VStack {
-            HStack {
-                Button(role:.destructive) {
-                    
-                } label: {
-                    Text("Cancel").padding(3)
-                }
-                Spacer()
-                Text("New Comment")
-                    .padding(3)
-                    .font(.title2)
-                Spacer()
-                Button {
-                    postComment(_id: id ?? "", token: token ?? "", content: currenthtml, parent: nil)
-                } label: {
-                    Text("Post")
-                        .padding(3)
-                }
-            }
-            Text("Edit:")
-                .font(.title3)
-            MarkupEditorView(markupDelegate: self, html: $startHtml)
-        }.padding(5)
-    }*/
     func postComment(_id: String, token: String, content: String, parent: Optional<String>) {
         print(content)
         //var result: LoginResponse = LoginResponse(ok: "false", new: New(isLoving: false, loves: 0))

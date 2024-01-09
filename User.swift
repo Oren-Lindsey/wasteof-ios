@@ -55,6 +55,9 @@ struct User: View {
         }
     }
     var body: some View {
+        let historyObject = userData.history ?? History(joined: 0)
+        let time = historyObject.joined
+        let jointime: Date = Date(timeIntervalSince1970: TimeInterval(time / 1000))
         if userData.id == "" {
             loader
         } else {
@@ -65,6 +68,16 @@ struct User: View {
                             .frame(height: 4)
                             .foregroundColor(profileColor),
                         alignment: .bottom).ignoresSafeArea()
+                    HStack {
+                        NavigationStack {
+                            NavigationLink {
+                                Wall(username: userData.name).environmentObject(session)
+                            } label: {
+                                Label("Wall", systemImage: "person.bubble")
+                            }.buttonStyle(.bordered)
+                        }
+                        Spacer()
+                    }
                     if $userPosts.posts.count < 1 && userPosts.last == false {
                         ProgressView().onAppear() {
                             getUserPosts(name: name, page: page) { (posts) in
@@ -118,16 +131,16 @@ struct User: View {
                         }
                     }
                 }.ignoresSafeArea(edges: [.top])
-                }.refreshable {
-                    getUserPosts(name: name, page: page) { (posts) in
-                        userPosts = posts
-                    }
-                    getUserData(username: name) { (user) in
-                        userData = user
-                    }
-                }.ignoresSafeArea(edges: [.top])
+            }.refreshable {
+                getUserPosts(name: name, page: page) { (posts) in
+                    userPosts = posts
+                }
+                getUserData(username: name) { (user) in
+                    userData = user
+                }
             }
         }
+    }
     @ViewBuilder private var loader: some View {
         ProgressView().onAppear() {
             getUserData(username: name) { (user) in
@@ -140,14 +153,20 @@ struct User: View {
         }
     }
     @ViewBuilder private var header: some View {
-        let jointime: Date = Date(timeIntervalSince1970: TimeInterval(userData.history.joined / 1000))
+        let historyObject = userData.history ?? History(joined: 0)
+        let time = historyObject.joined
+        let jointime: Date = Date(timeIntervalSince1970: TimeInterval(time / 1000))
         let dateresult = jointime.isBetween(Date(timeIntervalSince1970: TimeInterval(1623470400)), Date(timeIntervalSince1970: TimeInterval(1639285200)))
         ZStack {
             Rectangle().foregroundColor(.black).frame(maxWidth: .infinity, maxHeight: .infinity).ignoresSafeArea()
             AsyncImage(url: URL(string:"https://api.wasteof.money/users/\(userData.name)/banner")) { phase in
                 switch phase {
                 case .empty:
-                    ProgressView()
+                    VStack {
+                        HStack {
+                            ProgressView().frame(minWidth: UIScreen.main.bounds.width)
+                        }.frame(minHeight: UIScreen.main.bounds.height)
+                    }
                 case .success(let image):
                     image
                         .resizable()
@@ -156,77 +175,104 @@ struct User: View {
                         .opacity(0.8)
                         .frame(maxWidth: UIScreen.main.bounds.width)
                         .shadow(radius: 8)
+                        //.clipped()
                 case .failure:
-                    Image(systemName: "wifi.slash")
+                    EmptyView()
                 @unknown default:
                     EmptyView()
                 }
             }.ignoresSafeArea()
                 VStack {
                     HStack {
-                        AsyncImage(
-                            url: URL(string: "https://api.wasteof.money/users/\(userData.name)/picture"),
-                            transaction: Transaction(animation: .easeInOut)
-                        ) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .transition(.scale(scale: 0.1, anchor: .center))
-                            case .failure:
-                                Image(systemName: "wifi.slash")
-                            @unknown default:
-                                EmptyView()
+                        VStack {
+                            AsyncImage(
+                                url: URL(string: "https://api.wasteof.money/users/\(userData.name)/picture"),
+                                transaction: Transaction(animation: .easeInOut)
+                            ) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .transition(.scale(scale: 0.1, anchor: .center))
+                                case .failure:
+                                    Image(systemName: "wifi.slash")
+                                @unknown default:
+                                    EmptyView()
+                                }
                             }
+                            .frame(width: 65, height: 65)
+                            .background(Color.gray)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(self.profileColor, lineWidth: 4)
+                            )
+                            .padding([.leading])
+                            Spacer()
                         }
-                        .frame(width: 65, height: 65)
-                        .background(Color.gray)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(self.profileColor, lineWidth: 4)
-                        )
-                        .padding([.leading])
                         VStack {
                             HStack {
-                                Text("@\(userData.name)").font(.largeTitle)
-                                if userData.verified {
-                                    Image(systemName: "checkmark.seal.fill")
-                                }
-                                if userData.permissions.admin {
-                                    Image(systemName: "checkmark.shield.fill")
-                                }
-                                if userData.beta {
-                                    Image(systemName: "testtube.2")
-                                }
-                                if dateresult {
-                                    Image(systemName: "crown")
+                                    Text("@\(userData.name)").font(.largeTitle)
+                                    if userData.verified {
+                                        Image(systemName: "checkmark.seal.fill")
+                                    }
+                                    if userData.permissions.admin {
+                                        Image(systemName: "checkmark.shield.fill")
+                                    }
+                                    if userData.beta {
+                                        Image(systemName: "testtube.2")
+                                    }
+                                    if dateresult {
+                                        if userData.name == "jeffalo" {
+                                            Image(systemName: "crown.fill")
+                                        } else {
+                                            Image(systemName: "crown")
+                                        }
+                                    }
+                                Spacer()
+                            }
+                            if jointime.timeIntervalSince1970 > 1 {
+                                HStack {
+                                    Label("Joined \(jointime.formatted(date: .numeric, time: .omitted))", systemImage: "clock")
+                                    Spacer()
                                 }
                             }
-                            HStack {
-                                Spacer()
-                                if checkedFollowsYou {
-                                    if followsYou {
-                                        Label("Follows you", systemImage: "checkmark").italic().padding([.horizontal]).background(.thinMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                                    } else {
-                                        EmptyView()
+                            if checkedFollowsYou {
+                                if followsYou {
+                                    HStack {
+                                        Label("Follows you", systemImage: "checkmark").italic()
+                                        Spacer()
                                     }
                                 } else {
-                                    ProgressView().onAppear() {
-                                        checkFollowing(name: session.name, sessionName: userData.name) { (result) in
-                                            followsYou = result
-                                            checkedFollowsYou = true
-                                        }
-                                   }
+                                    EmptyView()
                                 }
-                                Spacer()
+                            } else {
+                                ProgressView().onAppear() {
+                                    checkFollowing(name: session.name, sessionName: userData.name) { (result) in
+                                        followsYou = result
+                                        checkedFollowsYou = true
+                                    }
+                               }
                             }
+                            Spacer()
                         }
-                        Spacer()
-                        if following {
-                            ZStack {
+                        //Spacer()
+                        VStack {
+                            if following {
+                                ZStack {
+                                    Button {
+                                        followUser(name: userData.name, token: session.token) { (result) in
+                                            userData.stats.followers = result.new.followers
+                                            userData.stats.following = result.new.following
+                                            following = result.new.isFollowing
+                                        }
+                                    } label: {
+                                        Label("Unfollow", systemImage: "person.badge.plus")
+                                    }.tint(profileColor).buttonStyle(.bordered).background(RoundedRectangle(cornerRadius: 8, style: .continuous).foregroundColor(.black).opacity(0.5))
+                                }
+                            } else {
                                 Button {
                                     followUser(name: userData.name, token: session.token) { (result) in
                                         userData.stats.followers = result.new.followers
@@ -234,56 +280,43 @@ struct User: View {
                                         following = result.new.isFollowing
                                     }
                                 } label: {
-                                    Label("Unfollow", systemImage: "person.badge.plus")
-                                }.tint(profileColor).buttonStyle(.bordered).background(RoundedRectangle(cornerRadius: 8, style: .continuous).foregroundColor(.black).opacity(0.5))
-                            }
-                        } else {
-                            Button {
-                                followUser(name: userData.name, token: session.token) { (result) in
-                                    userData.stats.followers = result.new.followers
-                                    userData.stats.following = result.new.following
-                                    following = result.new.isFollowing
-                                }
-                            } label: {
-                                Label("Follow", systemImage: "person.badge.plus")
-                            }.tint(profileColor).buttonStyle(.borderedProminent).onAppear() {
-                                checkFollowing(name: userData.name, sessionName: session.name) { (result) in
-                                    following = result
+                                    Label("Follow", systemImage: "person.badge.plus")
+                                }.tint(profileColor).buttonStyle(.borderedProminent).onAppear() {
+                                    checkFollowing(name: userData.name, sessionName: session.name) { (result) in
+                                        following = result
+                                    }
                                 }
                             }
+                            Spacer()
                         }
                         Spacer()
                     }.padding([.top], navigationType == "stack" ? 105 : 60)
-                    HStack {
-                        VStack {
-                            Text("\(userData.stats.followers)").bold()
-                            Text("followers")
-                        }.padding(8).background(.thinMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                        VStack {
-                            Text("\(userData.stats.following)").bold()
-                            Text("following")
-                        }.padding(8).background(.thinMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                        VStack {
-                            Text("\(userData.stats.posts)").bold()
-                            Text("posts")
-                        }.padding(8).background(.thinMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                        VStack {
-                            Text("\(jointime.formatted(date: .numeric, time: .omitted))").bold()
-                            Text("joined")
-                        }.padding(8).background(.thinMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    }.padding([.horizontal])
                     if userData.name == session.name {
                         TextField("Edit bio", text: $editBio).textFieldStyle(.roundedBorder).submitLabel(.done).padding([.horizontal], 5).onSubmit {
-                            updateBio(name: session.name, content: editBio, token: session.token) { (response) in
-                                userData.bio = response.bio
+                                updateBio(name: session.name, content: editBio, token: session.token) { (response) in
+                                    userData.bio = response.bio
+                                }
+                            }
+                        } else {
+                            if userData.bio.count > 0 {
+                                Text("\"\(userData.bio)\"").font(.callout).padding(1).foregroundColor(.white)
                             }
                         }
-                    } else {
-                        if userData.bio.count > 0 {
-                            Text("\"\(userData.bio)\"").font(.callout).padding(1).foregroundColor(.white)
-                        }
-                    }
-                    Spacer()
+                        Spacer()
+                    HStack {
+                        VStack {
+                            Label("\(userData.stats.followers)", systemImage: "person").bold()
+                            Text("followers")
+                        }.padding(10).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        VStack {
+                            Label("\(userData.stats.following)", systemImage: "person").bold()
+                            Text("following")
+                        }.padding(10).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        VStack {
+                            Label("\(userData.stats.posts)", systemImage: "note.text").bold()
+                            Text("posts")
+                        }.padding(10).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    }.padding([.horizontal, .bottom], 10)
                 }
         }.frame(maxWidth: .infinity, maxHeight: .infinity).ignoresSafeArea()
     }
@@ -297,16 +330,10 @@ public extension Date {
     }
 }
 func checkFollowing(name: String, sessionName: String, callback: ((Bool) -> ())? = nil) {
-    //var result: LoginResponse = LoginResponse(ok: "false", new: New(isLoving: false, loves: 0))
     let url = URL(string: "https://api.wasteof.money/users/\(name)/followers/\(sessionName)")
     guard let requestUrl = url else { fatalError() }
     var request = URLRequest(url: requestUrl)
     request.httpMethod = "GET"
-    //let postString = "username=\(username)&password=\(password)"
-    /*struct LoginData: Hashable, Codable {
-        let username: String
-        let password: String
-    }*/
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
         if let error = error {
             print("Error took place \(error)")
