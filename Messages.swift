@@ -36,30 +36,6 @@ class MessagesStateObject: ObservableObject {
         self.unread = []
     }
 }
-/*struct UnreadType: Hashable, Codable {
-    var unread: [Message]
-    enum CodingKeys: String, CodingKey {
-        case unread
-    }
-}*/
-/*struct Message: Hashable, Codable {
-    var _id: String
-    var data: [MessageData]
-    var read: Bool
-    var time: Int
-    var to: MessageReceiver
-    var type: String
-    var top: Optional<String>
-    enum CodingKeys: String, CodingKey {
-            case _id
-            case data
-            case read
-            case time
-            case to
-            case type
-            case top
-        }
-}*/
 struct Message: Hashable, Codable, Identifiable {
     let id: UUID = UUID()
     var _id: String
@@ -79,39 +55,13 @@ struct Message: Hashable, Codable, Identifiable {
         case type
         case top
     }
-    /*init(from decoder: Decoder) throws {
-        func parseDataString(_ dataString: String) -> [String: MessageData]? {
-            // Implement your parsing logic here to convert the string into a dictionary.
-            // You can use JSON serialization or any other method that fits your data structure.
-            return nil // Return the parsed dictionary or nil if parsing fails.
-        }
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-            _id = try container.decode(String.self, forKey: ._id)
-            read = try container.decode(Bool.self, forKey: .read)
-            time = try container.decode(Int.self, forKey: .time)
-            to = try container.decode(MessageReceiver.self, forKey: .to)
-            type = try container.decode(String.self, forKey: .type)
-            top = try container.decodeIfPresent(String.self, forKey: .top)
-            
-            if let dataString = try? container.decode(String.self, forKey: .data) {
-                // Handle the case where data is a string, you can process it here if needed.
-                // For example, you can parse the string into a dictionary.
-                data = parseDataString(dataString)
-            } else if let dataDictionary = try? container.decode([String: MessageData].self, forKey: .data) {
-                data = dataDictionary
-            } else {
-                data = nil
-            }
-        }*/
-
-        // Implement the parsing logic for data when it's a string
 }
 
 struct MessageData: Hashable, Codable {
     var actor: Optional<MessageActor>
     var comment: Optional<MessagesCommentType>
     var post: Optional<PostType>
-    var wall: Optional<WallMessage>
+    var wall: Optional<WallUser>
     var content: Optional<String>
     enum CodingKeys: String, CodingKey {
             case actor
@@ -125,30 +75,11 @@ struct MessagesCommentType: Hashable, Codable {
     var _id: String
     var post: Optional<String>
     var poster: CommentPoster
-    var wall: Optional<WallMessage>
+    var wall: Optional<WallUser>
     var parent: Optional<String>
     var content: String
     var time: Int
     var hasReplies: Bool
-}
-/*struct MessagesCommentType: Hashable, Codable {
-    var _id: String
-    var post: Optional<PostType>
-    var poster: MessagesCommentPoster
-    var wall: Optional<WallMessage>
-    var parent: Optional<String>
-    var content: String
-    var time: Int
-    var hasReplies: Bool
-}*/
-/*struct MessagesCommentPoster: Hashable, Codable {
-    var name: String
-    var id: String
-    var color: String
-}*/
-struct WallMessage: Hashable, Codable {
-    var name: String
-    var id: String
 }
 struct MessageActor: Hashable, Codable {
     let name: String
@@ -178,7 +109,7 @@ struct Messages: View {
                         if messagesState.unread.count > 0 {
                             ForEach(messagesState.unread.indices, id: \.self) { i in
                                 let profilecolor: Color = {
-                                    switch messagesState.unread[i].data?.comment?.poster.color {
+                                    switch  messagesState.unread[i].data?.comment?.poster.color {
                                     case "red":
                                         return Color.red
                                     case "orange":
@@ -207,15 +138,14 @@ struct Messages: View {
                                         return Color.green
                                     }}()
                                 VStack {
-                                    if messagesState.unread[i].type == "comment_reply" {
-                                        if messagesState.unread[i].data?.comment != nil && messagesState.unread[i].data?.post != nil {
+                                    if  messagesState.unread[i].type == "comment_reply" {
+                                        if  messagesState.unread[i].data?.comment != nil &&  messagesState.unread[i].data?.post != nil {
                                             HStack {
-                                                Text("@\(messagesState.unread[i].data?.actor?.name ?? "") replied to your comment").multilineTextAlignment(.leading)
+                                                Text("@\( messagesState.unread[i].data?.actor?.name ?? "") replied to your comment").multilineTextAlignment(.leading)
                                                 Spacer()
                                             }
-                                            //CommentPreview(postId: messagesState.unread[i].data?.post?._id ?? "", _id: messagesState.unread[i].data?.comment?._id ?? "", poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), /*parent: messagesState.unread[i].data?.comment?.parent ?? "",*/ parentPoster: CommentPoster(name: user.name, id: user.id, color: user.color), content: messagesState.unread[i].data?.comment?.content ?? "", time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, profileColor: profilecolor, recursion: 2).environmentObject(session)
                                             NavigationLink {
-                                                Post(commentsState: CommentsObject(), _id: messagesState.unread[i].data?.post?._id ?? "", content: messagesState.unread[i].data?.post?.content ?? "", time: messagesState.unread[i].data?.post?.time ?? 0, comments: messagesState.unread[i].data?.post?.comments ?? 0, loves: messagesState.unread[i].data?.post?.loves ?? 0, reposts: messagesState.unread[i].data?.post?.reposts ?? 0, poster: messagesState.unread[i].data?.post?.poster ?? Poster(name: "", id: "", color: ""), revisions: messagesState.unread[i].data?.post?.revisions ?? [], edited: messagesState.unread[i].data?.post?.edited ?? 0, repost: messagesState.unread[i].data?.post?.repost ?? nil, pinType: true).environmentObject(session)
+                                                Post(commentsState: CommentsObject(), _id:  messagesState.unread[i].data?.post?._id ?? "", content: messagesState.unread[i].data?.post?.content ?? "", time: messagesState.unread[i].data?.post?.time ?? 0, comments: messagesState.unread[i].data?.post?.comments ?? 0, loves: messagesState.unread[i].data?.post?.loves ?? 0, reposts: messagesState.unread[i].data?.post?.reposts ?? 0, poster: messagesState.unread[i].data?.post?.poster ?? Poster(name: "", id: "", color: ""), revisions: messagesState.unread[i].data?.post?.revisions ?? [], edited: messagesState.unread[i].data?.post?.edited ?? 0, repost: messagesState.unread[i].data?.post?.repost ?? nil, pinType: true).environmentObject(session)
                                             } label: {
                                                 CommentPreview(postId: messagesState.unread[i].data?.post?._id ?? "", _id: messagesState.unread[i].data?.comment?._id ?? "", poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), /*parent: messagesState.unread[i].data?.comment?.parent ?? "",*/ parentPoster: nil, content: messagesState.unread[i].data?.comment?.content ?? "", time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, profileColor: profilecolor, recursion: 3).environmentObject(session)
                                             }
@@ -225,8 +155,6 @@ struct Messages: View {
                                                 Spacer()
                                             }
                                         }
-                                        //CommentPreview(postId: messagesState.unread[i].data?.post?._id ?? "", _id: messagesState.unread[i].data?.comment?._id ?? "", post: messagesState.unread[i].data?.comment?.post ?? "", poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: ""), parent: messagesState.unread[i].data?.comment?.parent, parentPoster: messagesState.unread[i].data?.comment.parent, content: messagesState.unread[i].data?.comment?.content, time: messagesState.unread[i].data?.comment?.time, hasReplies: messagesState.unread[i].data?.comment?.hasReplies, profileColor: Color.orange, recursion: 0)
-                                        //RichText(html: currentMessage.data?.comment?.content ?? "").multilineTextAlignment(.leading)
                                     } else if messagesState.unread[i].type == "follow" {
                                         HStack {
                                             Text("@\(messagesState.unread[i].data?.actor?.name ?? "") is now following you")
@@ -239,10 +167,6 @@ struct Messages: View {
                                             Spacer()
                                         }
                                     } else if messagesState.unread[i].type == "comment" {
-                                        /*let message: Message = messagesState.unread[i]
-                                         if message.data?.comment !== nil && message.data?.post !== nil {
-                                         CommentPreview(postId: message.data?.post?._id ?? "", _id: message.data?.comment?._id ?? "", poster: message.data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), parent: message.data?.comment?.parent ?? "", parentPoster: message.data?.comment?.parent ?? "", content: message.data?.comment?.content ?? "", time: message.data?.comment?.time ?? 0, hasReplies: message.data?.comment?.hasReplies ?? false, profileColor: message.data?.comment?.poster.color ?? Color.green, recursion: 0)
-                                         }*/
                                         if messagesState.unread[i].data?.comment != nil && messagesState.unread[i].data?.post != nil {
                                             HStack {
                                                 Text("@\(messagesState.unread[i].data?.actor?.name ?? "") commented on your post")
@@ -283,7 +207,6 @@ struct Messages: View {
                                                 Text("@\(messagesState.unread[i].data?.actor?.name ?? "") mentioned you in their comment")
                                                 Spacer()
                                             }
-                                            //CommentPreview(postId: messagesState.unread[i].data?.post?._id ?? "", _id: messagesState.unread[i].data?.comment?._id ?? "", poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), /*parent: messagesState.unread[i].data?.comment?.parent ?? "",*/ parentPoster: nil, content: messagesState.unread[i].data?.comment?.content ?? "", time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, profileColor: profilecolor, recursion: 2).environmentObject(session)
                                             NavigationLink {
                                                 Post(commentsState: CommentsObject(), _id: messagesState.unread[i].data?.post?._id ?? "", content: messagesState.unread[i].data?.post?.content ?? "", time: messagesState.unread[i].data?.post?.time ?? 0, comments: messagesState.unread[i].data?.post?.comments ?? 0, loves: messagesState.unread[i].data?.post?.loves ?? 0, reposts: messagesState.unread[i].data?.post?.reposts ?? 0, poster: messagesState.unread[i].data?.post?.poster ?? Poster(name: "", id: "", color: ""), revisions: messagesState.unread[i].data?.post?.revisions ?? [], edited: messagesState.unread[i].data?.post?.edited ?? 0, repost: messagesState.unread[i].data?.post?.repost ?? nil, pinType: true).environmentObject(session)
                                             } label: {
@@ -312,11 +235,73 @@ struct Messages: View {
                                                 Spacer()
                                             }
                                         }
-                                    } else if messagesState.unread[i].type == "wall_comment" || messagesState.unread[i].type == "wall_comment_mention" || messagesState.unread[i].type == "wall_comment_reply" {
-                                        HStack {
-                                            Text("Wall comment, not supported yet")
-                                            Spacer()
-                                        }
+                                    } else if messagesState.unread[i].type == "wall_comment" {
+                                       if messagesState.unread[i].data?.comment != nil {
+                                               HStack {
+                                                   Text("@\(messagesState.unread[i].data?.actor?.name ?? "") commented on your wall")
+                                                   Spacer()
+                                               }
+                                               NavigationLink {
+                                                   Wall(username: messagesState.unread[i].data?.wall?.name ?? "").environmentObject(session)
+                                               } label: {
+                                                   WallCommentPreview(id: messagesState.unread[i].data?.comment?._id ?? "", parent: messagesState.unread[i].data?.comment?.parent ?? "", content: messagesState.unread[i].data?.comment?.content ?? "", wall: messagesState.unread[i].data?.wall ?? WallUser(name: "", id: ""), poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, recursion: 1)
+                                               }
+                                       } else {
+                                           HStack {
+                                               Text("@\(messagesState.unread[i].data?.actor?.name ?? "") commented on your wall, but the comment was deleted :(")
+                                               Spacer()
+                                           }
+                                       }
+                                    } else if messagesState.unread[i].type == "wall_comment_mention" {
+                                        if messagesState.unread[i].data?.comment != nil {
+                                               HStack {
+                                                   if messagesState.unread[i].data?.wall?.name == session.name {
+                                                       Text("@\(messagesState.unread[i].data?.actor?.name ?? "") mentioned you on your wall")
+                                                   } else {
+                                                       Text("@\(messagesState.unread[i].data?.actor?.name ?? "") mentioned you on @\(messagesState.unread[i].data?.wall?.name ?? "")'s wall")
+                                                   }
+                                                   Spacer()
+                                               }
+                                               NavigationLink {
+                                                   Wall(username: messagesState.unread[i].data?.wall?.name ?? "").environmentObject(session)
+                                               } label: {
+                                                   WallCommentPreview(id: messagesState.unread[i].data?.comment?._id ?? "", parent: messagesState.unread[i].data?.comment?.parent ?? "", content: messagesState.unread[i].data?.comment?.content ?? "", wall: messagesState.unread[i].data?.wall ?? WallUser(name: "", id: ""), poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, recursion: 1)
+                                               }
+                                       } else {
+                                           HStack {
+                                               if messagesState.unread[i].data?.wall?.name == session.name {
+                                                   Text("@\(messagesState.unread[i].data?.actor?.name ?? "") mentioned you on your wall, but the comment was deleted :(")
+                                               } else {
+                                                   Text("@\(messagesState.unread[i].data?.actor?.name ?? "") mentioned you on @\(messagesState.unread[i].data?.wall?.name ?? "")'s wall, but the comment was deleted :(")
+                                               }
+                                               Spacer()
+                                           }
+                                       }
+                                    } else if messagesState.unread[i].type == "wall_comment_reply" {
+                                       if messagesState.unread[i].data?.comment != nil {
+                                               HStack {
+                                                   if messagesState.unread[i].data?.wall?.name == session.name {
+                                                       Text("@\(messagesState.unread[i].data?.actor?.name ?? "") replied to your comment on your wall")
+                                                   } else {
+                                                       Text("@\(messagesState.unread[i].data?.actor?.name ?? "") replied to your comment on @\(messagesState.unread[i].data?.wall?.name ?? "")'s wall")
+                                                   }
+                                                   Spacer()
+                                               }
+                                               NavigationLink {
+                                                   Wall(username: messagesState.unread[i].data?.wall?.name ?? "").environmentObject(session)
+                                               } label: {
+                                                   WallCommentPreview(id: messagesState.unread[i].data?.comment?._id ?? "", parent: messagesState.unread[i].data?.comment?.parent ?? "", content: messagesState.unread[i].data?.comment?.content ?? "", wall: messagesState.unread[i].data?.wall ?? WallUser(name: "", id: ""), poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, recursion: 1)
+                                               }
+                                       } else {
+                                           HStack {
+                                               if messagesState.unread[i].data?.wall?.name == session.name {
+                                                   Text("@\(messagesState.unread[i].data?.actor?.name ?? "") replied to your comment on your wall, but the comment was deleted :(")
+                                               } else {
+                                                   Text("@\(messagesState.unread[i].data?.actor?.name ?? "") replied to your comment on @\(messagesState.unread[i].data?.wall?.name ?? "")'s wall, but the comment was deleted :(")
+                                               }
+                                               Spacer()
+                                           }
+                                       }
                                     } else {
                                         HStack {
                                             Text("Unhandled message type: \(messagesState.unread[i].type)")
@@ -383,6 +368,7 @@ struct Messages: View {
                 }
             }
     }
+    
     func delete(at offsets: IndexSet) {
         for n in offsets {
             let messageid = messagesState.unread[n]._id

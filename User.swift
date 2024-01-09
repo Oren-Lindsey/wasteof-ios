@@ -57,7 +57,6 @@ struct User: View {
     var body: some View {
         let historyObject = userData.history ?? History(joined: 0)
         let time = historyObject.joined
-        let jointime: Date = Date(timeIntervalSince1970: TimeInterval(time / 1000))
         if userData.id == "" {
             loader
         } else {

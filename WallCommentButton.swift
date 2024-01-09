@@ -100,7 +100,7 @@ struct CommentResponse: Codable {
     let id: String
 }
 func postWallComment(wallUser: String, token: String, content: String, parent: Optional<String>, callback: ((CommentResponse) -> ())? = nil) {
-    var url = URL(string: "https://api.wasteof.money/users/\(wallUser)/wall")
+    let url = URL(string: "https://api.wasteof.money/users/\(wallUser)/wall")
     guard let requestUrl = url else { fatalError() }
     var request = URLRequest(url: requestUrl)
     request.httpMethod = "POST"
