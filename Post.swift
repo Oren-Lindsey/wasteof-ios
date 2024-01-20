@@ -139,7 +139,7 @@ struct Post: View, MarkupDelegate {
             }
             VStack {
                 ForEach(commentsState.comments.indices, id: \.self) { i in
-                    CommentPreview(postId: _id, _id: commentsState.comments[i]._id, /*post: commentsState.comments[i].post,*/ poster: commentsState.comments[i].poster, /*parent: commentsState.comments[i].parent,*/ parentPoster: nil, content: commentsState.comments[i].content, time: commentsState.comments[i].time, hasReplies: commentsState.comments[i].hasReplies, profileColor: profileColor, recursion: 0)
+                    CommentPreview(postId: _id, _id: commentsState.comments[i]._id, /*post: commentsState.comments[i].post,*/ poster: commentsState.comments[i].poster, /*parent: commentsState.comments[i].parent,*/ parentPoster: nil, content: commentsState.comments[i].content, time: commentsState.comments[i].time, hasReplies: commentsState.comments[i].hasReplies, profileColor: profileColor, recursion: 0).environmentObject(session)
                 }
                 if commentsState.last != true {
                     Button {

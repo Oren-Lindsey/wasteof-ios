@@ -63,7 +63,7 @@ struct Wall: View {
                 if wallFeed.comments.count > 0 {
                     ForEach(wallFeed.comments.indices, id: \.self) { i in
                         let comment = wallFeed.comments[i]
-                        WallCommentPreview(id: comment._id, parent: comment.parent, content: comment.content, wall: comment.wall, poster: comment.poster, time: comment.time, hasReplies: comment.hasReplies, recursion: 1).padding([.vertical],2)
+                        WallCommentPreview(id: comment._id, parent: comment.parent, content: comment.content, wall: comment.wall, poster: comment.poster, time: comment.time, hasReplies: comment.hasReplies, recursion: 1).padding([.vertical],2).environmentObject(session)
                     }
                     if !wallFeed.last {
                         Button {

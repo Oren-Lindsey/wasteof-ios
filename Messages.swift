@@ -244,7 +244,7 @@ struct Messages: View {
                                                NavigationLink {
                                                    Wall(username: messagesState.unread[i].data?.wall?.name ?? "").environmentObject(session)
                                                } label: {
-                                                   WallCommentPreview(id: messagesState.unread[i].data?.comment?._id ?? "", parent: messagesState.unread[i].data?.comment?.parent ?? "", content: messagesState.unread[i].data?.comment?.content ?? "", wall: messagesState.unread[i].data?.wall ?? WallUser(name: "", id: ""), poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, recursion: 1)
+                                                   WallCommentPreview(id: messagesState.unread[i].data?.comment?._id ?? "", parent: messagesState.unread[i].data?.comment?.parent ?? "", content: messagesState.unread[i].data?.comment?.content ?? "", wall: messagesState.unread[i].data?.wall ?? WallUser(name: "", id: ""), poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, recursion: 1).environmentObject(session)
                                                }
                                        } else {
                                            HStack {
@@ -265,7 +265,7 @@ struct Messages: View {
                                                NavigationLink {
                                                    Wall(username: messagesState.unread[i].data?.wall?.name ?? "").environmentObject(session)
                                                } label: {
-                                                   WallCommentPreview(id: messagesState.unread[i].data?.comment?._id ?? "", parent: messagesState.unread[i].data?.comment?.parent ?? "", content: messagesState.unread[i].data?.comment?.content ?? "", wall: messagesState.unread[i].data?.wall ?? WallUser(name: "", id: ""), poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, recursion: 1)
+                                                   WallCommentPreview(id: messagesState.unread[i].data?.comment?._id ?? "", parent: messagesState.unread[i].data?.comment?.parent ?? "", content: messagesState.unread[i].data?.comment?.content ?? "", wall: messagesState.unread[i].data?.wall ?? WallUser(name: "", id: ""), poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, recursion: 1).environmentObject(session)
                                                }
                                        } else {
                                            HStack {
@@ -290,7 +290,7 @@ struct Messages: View {
                                                NavigationLink {
                                                    Wall(username: messagesState.unread[i].data?.wall?.name ?? "").environmentObject(session)
                                                } label: {
-                                                   WallCommentPreview(id: messagesState.unread[i].data?.comment?._id ?? "", parent: messagesState.unread[i].data?.comment?.parent ?? "", content: messagesState.unread[i].data?.comment?.content ?? "", wall: messagesState.unread[i].data?.wall ?? WallUser(name: "", id: ""), poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, recursion: 1)
+                                                   WallCommentPreview(id: messagesState.unread[i].data?.comment?._id ?? "", parent: messagesState.unread[i].data?.comment?.parent ?? "", content: messagesState.unread[i].data?.comment?.content ?? "", wall: messagesState.unread[i].data?.wall ?? WallUser(name: "", id: ""), poster: messagesState.unread[i].data?.comment?.poster ?? CommentPoster(name: "", id: "", color: nil), time: messagesState.unread[i].data?.comment?.time ?? 0, hasReplies: messagesState.unread[i].data?.comment?.hasReplies ?? false, recursion: 1).environmentObject(session)
                                                }
                                        } else {
                                            HStack {

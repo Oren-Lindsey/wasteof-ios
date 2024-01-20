@@ -9,6 +9,7 @@ import SwiftUI
 import RichText
 
 struct WallCommentPreview: View {
+    @EnvironmentObject var session: Session
     var id: String
     var parent: Optional<String>
     var content: String
@@ -20,6 +21,7 @@ struct WallCommentPreview: View {
     @StateObject var replies: WallRepliesObject = WallRepliesObject()
     @State var dateShown = false
     @State var showMore = false
+    @State var deleted = false
     var profileColor: Color {
         switch poster.color {
         case "red":
@@ -56,74 +58,89 @@ struct WallCommentPreview: View {
         let userLocale = Locale.autoupdatingCurrent
         VStack {
             VStack {
-                HStack {
-                    NavigationStack {
-                        NavigationLink {
-                            User(name: poster.name, navigationType: "stack")
-                        } label: {
-                            HStack {
+                if !deleted {
+                    HStack {
+                        NavigationStack {
+                            NavigationLink {
+                                User(name: poster.name, navigationType: "stack")
+                            } label: {
                                 HStack {
-                                    AsyncImage(
-                                        url: pictureurl,
-                                        transaction: Transaction(animation: .easeInOut)
-                                    ) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            ProgressView()
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .transition(.scale(scale: 0.1, anchor: .center))
-                                        case .failure:
-                                            Image(systemName: "wifi.slash")
-                                        @unknown default:
-                                            EmptyView()
+                                    HStack {
+                                        AsyncImage(
+                                            url: pictureurl,
+                                            transaction: Transaction(animation: .easeInOut)
+                                        ) { phase in
+                                            switch phase {
+                                            case .empty:
+                                                ProgressView()
+                                            case .success(let image):
+                                                image
+                                                    .resizable()
+                                                    .transition(.scale(scale: 0.1, anchor: .center))
+                                            case .failure:
+                                                Image(systemName: "wifi.slash")
+                                            @unknown default:
+                                                EmptyView()
+                                            }
                                         }
-                                    }
-                                    .frame(width: 40, height: 40)
-                                    .background(Color.gray)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(profileColor, lineWidth: 4)
-                                    )
-                                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                                    Text("@\(poster.name)")
-                                        .font(.title2).tint(Color.white)
-                                }.padding(6).buttonStyle(PlainButtonStyle()).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                                Spacer()
+                                        .frame(width: 40, height: 40)
+                                        .background(Color.gray)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(profileColor, lineWidth: 4)
+                                        )
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        Text("@\(poster.name)")
+                                            .font(.title2).tint(Color.white)
+                                    }.padding(6).buttonStyle(PlainButtonStyle()).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                    Spacer()
+                                }
                             }
                         }
-                    }
-                    HStack {
-                        Text(dateShown ? posttime.description(with: userLocale) : posttime.formatted(date: .numeric, time: .shortened))
-                            .onTapGesture {
-                                dateShown.toggle()
-                            }
-                            .font(Font.body.italic())
-                            .foregroundColor(.secondary)
-                    }
-                }
-                RichText(html: content).multilineTextAlignment(.leading)
-                HStack {
-                    WallCommentButton(type: "reply", username: wall.name, parent: id).onPost {
-                        print("posted a new comment!")
-                        getReplies(commentId: id) { (repliesResults) in
-                            DispatchQueue.main.async {
-                                replies.comments = repliesResults.comments
-                                replies.last = repliesResults.last
-                            }
+                        HStack {
+                            Text(dateShown ? posttime.description(with: userLocale) : posttime.formatted(date: .numeric, time: .shortened))
+                                .onTapGesture {
+                                    dateShown.toggle()
+                                }
+                                .font(Font.body.italic())
+                                .foregroundColor(.secondary)
                         }
                     }
-                    Spacer()
+                    RichText(html: content).multilineTextAlignment(.leading)
                     HStack {
+                        WallCommentButton(type: "reply", username: wall.name, parent: id).onPost {
+                            print("posted a new comment!")
+                            getReplies(commentId: id) { (repliesResults) in
+                                DispatchQueue.main.async {
+                                    replies.comments = repliesResults.comments
+                                    replies.last = repliesResults.last
+                                }
+                            }
+                        }
                         Spacer()
-                            .frame(width: 5)
-                        Menu {
-                            ShareLink(item: URL(string: "https://wasteof.money/users/\(wall.name)/#comments-\(id)")!, message: Text("Comment by @\(poster.name)"))
-                        } label: {
-                            Label("", systemImage: "ellipsis.circle.fill").tint(profileColor)
+                        HStack {
+                            Spacer()
+                                .frame(width: 5)
+                            Menu {
+                                ShareLink(item: URL(string: "https://wasteof.money/users/\(wall.name)/#comments-\(id)")!, message: Text("Comment by @\(poster.name)"))
+                                if poster.name == session.name {
+                                    Button(role:.destructive) {
+                                        deleteComment(id: id, token: session.token) { (response) in
+                                            if response.ok == "comment deleted" {
+                                                deleted = true
+                                            }
+                                        }
+                                    } label: {
+                                        Label("Delete Comment", systemImage: "trash")
+                                    }
+                                }
+                            } label: {
+                                Label("", systemImage: "ellipsis.circle.fill").tint(profileColor)
+                            }
                         }
                     }
+                } else {
+                    Text("Comment deleted")
                 }
             }.padding().background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous)).onAppear() {
                 if hasReplies {
@@ -141,7 +158,7 @@ struct WallCommentPreview: View {
                     ForEach(replies.comments.indices, id: \.self) {i in
                         let reply = replies.comments[i]
                         if recursion < 3 || showMore {
-                            WallCommentPreview(id: reply._id, parent: reply.parent, content: reply.content, wall: reply.wall, poster: reply.poster, time: reply.time, hasReplies: reply.hasReplies, recursion: recursion + 1).frame(maxWidth: 300)
+                            WallCommentPreview(id: reply._id, parent: reply.parent, content: reply.content, wall: reply.wall, poster: reply.poster, time: reply.time, hasReplies: reply.hasReplies, recursion: recursion + 1).frame(maxWidth: 300).environmentObject(session)
                             Spacer()
                         } else {
                             Button {
@@ -212,6 +229,35 @@ func getReplies(commentId: String, callback: ((WallRepliesObject) -> ())? = nil)
             } catch {
                 print("error decoding 2: \(error)")
                 print(String(bytes: data, encoding: .utf8)!)
+            }
+        }
+    }
+    task.resume()
+}
+struct DeleteResponse: Hashable, Codable {
+    var ok: String
+}
+func deleteComment(id: String, token: String, callback: ((DeleteResponse) -> ())? = nil) {
+    let url = URL(string: "https://api.wasteof.money/comments/\(id)")
+    guard let requestUrl = url else { fatalError() }
+    var request = URLRequest(url: requestUrl)
+    request.httpMethod = "DELETE"
+    request.addValue(token, forHTTPHeaderField: "Authorization")
+    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        guard let data = data, error == nil else {
+            print("error with the data: \(error!)")
+            return
+        }
+        if let error = error {
+            print("Error took place \(error)")
+        } else {
+            if let httpResponse = response as? HTTPURLResponse {
+                do {
+                    let api = try JSONDecoder().decode(DeleteResponse.self, from: data)
+                    callback!(api)
+                } catch {
+                    print("error decoding: \(error)")
+                }
             }
         }
     }
