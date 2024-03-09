@@ -1,67 +1,67 @@
 {
   "images" : [
     {
-      "filename" : "logov1greenios.png",
+      "filename" : "logov1opaque 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
     },
     {
-      "filename" : "logov1greenios 16.png",
+      "filename" : "logov1-16opaque.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "16x16"
     },
     {
-      "filename" : "logov1greenios 33.png",
+      "filename" : "logov1-32opaque.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
-      "filename" : "logov1greenios 32.png",
+      "filename" : "logov1-33opaque.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
-      "filename" : "logov1greenios 64.png",
+      "filename" : "logov1-64opaque.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
     },
     {
-      "filename" : "logov1greenios 128.png",
+      "filename" : "logov1-128opaque.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"
     },
     {
-      "filename" : "logov1greenios 256.png",
+      "filename" : "logov1-256opaque.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
     },
     {
-      "filename" : "logov1greenios 257.png",
+      "filename" : "logov1-257opaque.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "256x256"
     },
     {
-      "filename" : "logov1greenios 512.png",
+      "filename" : "logov1-512opaque 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
-      "filename" : "logov1greenios 513.png",
+      "filename" : "logov1-512opaque.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
-      "filename" : "logov1greenios 1.png",
+      "filename" : "logov1opaque.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
