@@ -233,6 +233,9 @@ struct Homescreen: View {
                     User(name: session.name, navigationType: "tab").tabItem {
                         Label("Your Profile", systemImage: "person")
                     }.environmentObject(session)
+                    Settings().tabItem {
+                        Label("Settings", systemImage: "gear")
+                    }.environmentObject(session)
                 }
                 VStack {
                     Spacer()
