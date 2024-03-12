@@ -28,6 +28,8 @@
 		B3A914482B1390C0009BC911 /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A914472B1390C0009BC911 /* Feed.swift */; };
 		B3A9144A2B13E529009BC911 /* PostPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A914492B13E529009BC911 /* PostPreview.swift */; };
 		B3A9144D2B13EA13009BC911 /* RichText in Frameworks */ = {isa = PBXBuildFile; productRef = B3A9144C2B13EA13009BC911 /* RichText */; };
+		B3AD51102BA0D7F60035FAC4 /* Stickers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3AD510F2BA0D7F60035FAC4 /* Stickers.xcassets */; };
+		B3AD51142BA0D7F60035FAC4 /* wasteof.money.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3AD510D2BA0D7F40035FAC4 /* wasteof.money.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3BC35C92B1A880900CB5247 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BC35C82B1A880900CB5247 /* Post.swift */; };
 		B3BC35CC2B1A882C00CB5247 /* MarkupEditor in Frameworks */ = {isa = PBXBuildFile; productRef = B3BC35CB2B1A882C00CB5247 /* MarkupEditor */; };
 		B3BC35CE2B1A885700CB5247 /* CommentPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BC35CD2B1A885700CB5247 /* CommentPreview.swift */; };
@@ -52,7 +54,28 @@
 			remoteGlobalIDString = B3A9140E2B12401D009BC911;
 			remoteInfo = "wasteof-ios";
 		};
+		B3AD51122BA0D7F60035FAC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B3A914072B12401D009BC911 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B3AD510C2BA0D7F40035FAC4;
+			remoteInfo = wasteof.money;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B3AD51152BA0D7F60035FAC4 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B3AD51142BA0D7F60035FAC4 /* wasteof.money.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		B30872722B40763500956C4A /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -78,6 +101,9 @@
 		B3A914452B12B361009BC911 /* Homescreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Homescreen.swift; sourceTree = "<group>"; };
 		B3A914472B1390C0009BC911 /* Feed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		B3A914492B13E529009BC911 /* PostPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostPreview.swift; sourceTree = "<group>"; };
+		B3AD510D2BA0D7F40035FAC4 /* wasteof.money.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = wasteof.money.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3AD510F2BA0D7F60035FAC4 /* Stickers.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Stickers.xcassets; sourceTree = "<group>"; };
+		B3AD51112BA0D7F60035FAC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B3BC35C82B1A880900CB5247 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		B3BC35CD2B1A885700CB5247 /* CommentPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentPreview.swift; sourceTree = "<group>"; };
 		B3BC35CF2B1A88AA00CB5247 /* CommentEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentEditor.swift; sourceTree = "<group>"; };
@@ -135,6 +161,7 @@
 				B3A914112B12401D009BC911 /* wasteof-ios */,
 				B3A914232B12401E009BC911 /* wasteof-iosTests */,
 				B3A9142D2B12401E009BC911 /* wasteof-iosUITests */,
+				B3AD510E2BA0D7F50035FAC4 /* wasteof.money */,
 				B3A914102B12401D009BC911 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -145,6 +172,7 @@
 				B3A9140F2B12401D009BC911 /* wasteof-ios.app */,
 				B3A914202B12401E009BC911 /* wasteof-iosTests.xctest */,
 				B3A9142A2B12401E009BC911 /* wasteof-iosUITests.xctest */,
+				B3AD510D2BA0D7F40035FAC4 /* wasteof.money.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -189,6 +217,15 @@
 			path = "wasteof-iosUITests";
 			sourceTree = "<group>";
 		};
+		B3AD510E2BA0D7F50035FAC4 /* wasteof.money */ = {
+			isa = PBXGroup;
+			children = (
+				B3AD510F2BA0D7F60035FAC4 /* Stickers.xcassets */,
+				B3AD51112BA0D7F60035FAC4 /* Info.plist */,
+			);
+			path = wasteof.money;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -199,10 +236,12 @@
 				B3A9140B2B12401D009BC911 /* Sources */,
 				B3A9140C2B12401D009BC911 /* Frameworks */,
 				B3A9140D2B12401D009BC911 /* Resources */,
+				B3AD51152BA0D7F60035FAC4 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B3AD51132BA0D7F60035FAC4 /* PBXTargetDependency */,
 			);
 			name = "wasteof-ios";
 			packageProductDependencies = (
@@ -250,6 +289,21 @@
 			productReference = B3A9142A2B12401E009BC911 /* wasteof-iosUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		B3AD510C2BA0D7F40035FAC4 /* wasteof.money */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B3AD51182BA0D7F60035FAC4 /* Build configuration list for PBXNativeTarget "wasteof.money" */;
+			buildPhases = (
+				B3AD510B2BA0D7F40035FAC4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = wasteof.money;
+			productName = wasteof.money;
+			productReference = B3AD510D2BA0D7F40035FAC4 /* wasteof.money.appex */;
+			productType = "com.apple.product-type.app-extension.messages-sticker-pack";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -270,6 +324,9 @@
 					B3A914292B12401E009BC911 = {
 						CreatedOnToolsVersion = 15.0.1;
 						TestTargetID = B3A9140E2B12401D009BC911;
+					};
+					B3AD510C2BA0D7F40035FAC4 = {
+						CreatedOnToolsVersion = 15.2;
 					};
 				};
 			};
@@ -294,6 +351,7 @@
 				B3A9140E2B12401D009BC911 /* wasteof-ios */,
 				B3A9141F2B12401E009BC911 /* wasteof-iosTests */,
 				B3A914292B12401E009BC911 /* wasteof-iosUITests */,
+				B3AD510C2BA0D7F40035FAC4 /* wasteof.money */,
 			);
 		};
 /* End PBXProject section */
@@ -319,6 +377,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B3AD510B2BA0D7F40035FAC4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B3AD51102BA0D7F60035FAC4 /* Stickers.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +447,11 @@
 			isa = PBXTargetDependency;
 			target = B3A9140E2B12401D009BC911 /* wasteof-ios */;
 			targetProxy = B3A9142B2B12401E009BC911 /* PBXContainerItemProxy */;
+		};
+		B3AD51132BA0D7F60035FAC4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B3AD510C2BA0D7F40035FAC4 /* wasteof.money */;
+			targetProxy = B3AD51122BA0D7F60035FAC4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -679,6 +750,49 @@
 			};
 			name = Release;
 		};
+		B3AD51162BA0D7F60035FAC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BMMGWG45G2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = wasteof.money/Info.plist;
+				INFOPLIST_KEY_NSStickerSharingLevel = OS;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "studio.lindsey.wasteof.wasteof-money";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B3AD51172BA0D7F60035FAC4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BMMGWG45G2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = wasteof.money/Info.plist;
+				INFOPLIST_KEY_NSStickerSharingLevel = OS;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "studio.lindsey.wasteof.wasteof-money";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -714,6 +828,15 @@
 			buildConfigurations = (
 				B3A9143B2B12401E009BC911 /* Debug */,
 				B3A9143C2B12401E009BC911 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B3AD51182BA0D7F60035FAC4 /* Build configuration list for PBXNativeTarget "wasteof.money" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3AD51162BA0D7F60035FAC4 /* Debug */,
+				B3AD51172BA0D7F60035FAC4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

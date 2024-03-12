@@ -13,8 +13,9 @@ struct Login: View {
     @State var password = ""
     @State var loadingSpinner = false
     @State var status = ""
+    let regex = /^[a-z0-9_\\-]{1,20}$/
     var buttonDisabled: Bool {
-        return username.isEmpty || password.isEmpty // upgrade this to match this regex someday: /^[a-z0-9_\\-]{1,20}$/
+        return username.isEmpty || password.isEmpty || (username.wholeMatch(of: regex) == nil)
     }
     @EnvironmentObject var session: Session
     @EnvironmentObject var loginProps: LoginProps
@@ -41,8 +42,11 @@ struct Login: View {
             header
             HStack {
                 Spacer()
-                inputs
-                Spacer()
+                VStack {
+                    inputs
+                    Text(status).foregroundStyle(.red)
+                    Spacer()
+                }
             }
             Spacer()
         }
@@ -50,31 +54,32 @@ struct Login: View {
         
     }
     @ViewBuilder private var inputs: some View {
-        Form {
-            Section {
-                Text(status)
-                HStack {
-                    Spacer()
-                    TextField("Username", text: $username).textContentType(.username)
-                    Spacer()
-                }
-                HStack {
-                    Spacer()
-                    SecureField("Password", text: $password).textContentType(.password)
-                    Spacer()
-                }
-            }
-            Section {
-                if loadingSpinner {
-                    ProgressView()
-                } else {
-                    Button {
-                        tryLogin()
-                    } label: {
-                        Text("Login")
-                    }.buttonStyle(.bordered)
-                }
-            }.disabled(buttonDisabled)
+        VStack {
+            Text("Login").font(.title2)
+            TextField("Username", text: $username).textContentType(.username).padding(.horizontal, 10)
+                .frame(height: 42)
+                .overlay(
+                  RoundedRectangle(cornerSize: CGSize(width: 4, height: 4))
+                    .stroke(username.wholeMatch(of: regex) != nil || !username.isEmpty ? Color.gray : Color.red, lineWidth: 1)
+                ).autocapitalization(.none).textInputAutocapitalization(.never).textCase(.lowercase)
+            SecureField("password", text: $password).textContentType(.password).padding(.horizontal, 10)
+                .frame(height: 42)
+                .overlay(
+                  RoundedRectangle(cornerSize: CGSize(width: 4, height: 4))
+                    .stroke(password.isEmpty ? Color.red : Color.gray, lineWidth: 1)
+                )
+            button
+        }.padding()
+    }
+    @ViewBuilder private var button: some View {
+        if loadingSpinner {
+            ProgressView()
+        } else {
+            Button {
+                tryLogin()
+            } label: {
+                Text("Login")
+            }.buttonStyle(.bordered).disabled(buttonDisabled)
         }
     }
     @ViewBuilder private var header: some View {
