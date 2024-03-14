@@ -91,7 +91,7 @@ struct Settings: View {
     @ViewBuilder private var iconChooser: some View {
         List {
             Button {
-                changeAppIcon(to: "AppIcon")
+                changeAppIcon(to: nil)
             } label: {
                 Text("Original")
             }
@@ -112,7 +112,7 @@ struct Settings: View {
             }
         }
     }
-    private func changeAppIcon(to iconName: String) {
+    private func changeAppIcon(to iconName: String?) {
         UIApplication.shared.setAlternateIconName(iconName) { error in
             if let error = error {
                 print("Error setting alternate icon \(error.localizedDescription)")

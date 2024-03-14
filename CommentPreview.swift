@@ -12,6 +12,7 @@ struct ApiError: Hashable, Codable {
     let error: String
 }
 struct CommentPreview: View {
+    @Environment(\.colorScheme) var colorScheme
     let postId: String
     var _id: String
     var poster: CommentPoster
@@ -58,14 +59,14 @@ struct CommentPreview: View {
                                             }
                                         }
                                         .frame(width: 40, height: 40)
-                                        .background(Color.gray)
+                                        .background(Color.white)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(profileColor, lineWidth: 4)
                                         )
                                         .clipShape(RoundedRectangle(cornerRadius: 8))
                                         Text("@\(poster.name)")
-                                            .font(.title2).tint(Color.white)
+                                            .font(.title2).tint(colorScheme == .dark ? Color.white : Color.black)
                                     }.padding(6).buttonStyle(PlainButtonStyle()).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                                     Spacer()
                                     if parentPoster != nil {

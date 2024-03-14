@@ -84,7 +84,7 @@ struct WallCommentPreview: View {
                                             }
                                         }
                                         .frame(width: 40, height: 40)
-                                        .background(Color.gray)
+                                        .background(Color.white)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(profileColor, lineWidth: 4)

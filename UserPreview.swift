@@ -70,7 +70,7 @@ struct UserPreview: View {
                 }
             }
             .frame(width: 60, height: 60)
-            .background(Color.gray)
+            .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
