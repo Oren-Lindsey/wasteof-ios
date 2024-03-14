@@ -6,34 +6,81 @@
 //
 
 import SwiftUI
-
-struct Settings: View {
-    @EnvironmentObject var session: Session
-    var body: some View {
-        ScrollView {
-            VStack {
-                Button {
-                    session.token = ""
-                    session.name = ""
-                    session.color = "indigo"
-                    session.bio = ""
-                    session.verified = false
-                    session.permissions = Permissions(admin: false, banned: false)
-                    session.beta = false
-                    session.color = ""
-                    session.links = []
-                    session.history = History(joined: 0)
-                    session.stats = UserStats(followers: 0, following: 0, posts: 0)
-                    session.online = false
-                    session.token = ""
-                } label: {
-                    Label("Log Out", systemImage: "trash")
-                }
-            }
-        }.navigationTitle("Settings")
+import Foundation
+extension UIApplication {
+    static var appVersion: String? {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     }
 }
+enum AppIconProvider {
+    static func appIcon(in bundle: Bundle = .main) -> String {
+        guard let icons = bundle.object(forInfoDictionaryKey: "CFBundleIcons") as? [String: Any],
+              let primaryIcon = icons["CFBundlePrimaryIcon"] as? [String: Any],
+              let iconFiles = primaryIcon["CFBundleIconFiles"] as? [String],
+              let iconFileName = iconFiles.last else {
+            fatalError("Could not find icons in bundle")
+        }
 
-#Preview {
-    Settings()
+        return iconFileName
+    }
+}
+struct Settings: View {
+    @EnvironmentObject var session: Session
+    @State var tabSelection = "feed"
+    let defaults = UserDefaults.standard
+    var body: some View {
+        ScrollView {
+            NavigationView {
+                Form {
+                    Section(header: Text("Startup")) {
+                        Picker("Startup Tab", selection: $tabSelection) {
+                            Text("Feed").tag("feed")
+                            Text("Explore").tag("explore")
+                            Text("Messages").tag("messages")
+                        }.onChange(of: tabSelection) {
+                            defaults.set(tabSelection, forKey: "startup_tab")
+                        }.onAppear {
+                            if let tab = UserDefaults.standard.object(forKey: "startup_tab") {
+                                tabSelection = tab as! String
+                            } else {
+                                defaults.set("feed", forKey: "startup_tab")
+                            }
+                        }
+                    }
+                    Section(header:Text("Session")) {
+                        Button {
+                            session.token = ""
+                            session.name = ""
+                            session.color = "indigo"
+                            session.bio = ""
+                            session.verified = false
+                            session.permissions = Permissions(admin: false, banned: false)
+                            session.beta = false
+                            session.color = ""
+                            session.links = []
+                            session.history = History(joined: 0)
+                            session.stats = UserStats(followers: 0, following: 0, posts: 0)
+                            session.online = false
+                            session.token = ""
+                            [kSecClassGenericPassword, kSecClassInternetPassword, kSecClassCertificate, kSecClassKey, kSecClassIdentity].forEach {
+                                let status = SecItemDelete([kSecClass: $0,kSecAttrSynchronizable: kSecAttrSynchronizableAny] as CFDictionary)
+                                if status != errSecSuccess && status != errSecItemNotFound {
+                                    print(status)
+                                }
+                            }
+                        } label: {
+                            Label("Log Out", systemImage: "trash")
+                        }
+                    }
+                    Section {
+                        NavigationLink {
+                            About(appIcon: AppIconProvider.appIcon()).environmentObject(session).navigationTitle("About")
+                        } label: {
+                            Text("About")
+                        }
+                    }
+                }.navigationTitle("Settings")
+            }
+        }
+    }
 }

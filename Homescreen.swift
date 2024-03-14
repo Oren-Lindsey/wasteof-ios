@@ -186,6 +186,7 @@ func fetchMessages(token: String, page: Int, read: Bool, callback: ((MessagesObj
     task.resume()
 }
 struct Homescreen: View {
+    let defaults = UserDefaults.standard
     @State var newPostId = ""
     @State var showPopup = false
     @EnvironmentObject var session: Session
@@ -194,9 +195,15 @@ struct Homescreen: View {
     @ObservedObject var exploreusers: ExploreUsersObject = ExploreUsersObject()
     @ObservedObject var messagesState: MessagesStateObject = MessagesStateObject()
     @State var page = 1
+    @State var tabSelection = "feed"
     var body: some View {
         if feed.posts.count < 1 {
             ProgressView().onAppear {
+                if let tab = UserDefaults.standard.object(forKey: "startup_tab") {
+                    tabSelection = tab as! String
+                } else {
+                    defaults.set("feed", forKey: "startup_tab")
+                }
                 fetchFeed(user: session.name, page: page) { (feedObject) in
                     DispatchQueue.main.async {
                         feed.posts += feedObject.posts
@@ -220,22 +227,22 @@ struct Homescreen: View {
             }
         } else {
             ZStack {
-                TabView {
+                TabView(selection:$tabSelection) {
                     Feed(feed: feed, page: page).tabItem {
                         Label("Home", systemImage: "house")
-                    }.environmentObject(session)
+                    }.environmentObject(session).tag("feed")
                     Explore(explore: explore, exploreusers: exploreusers).tabItem {
                         Label("Explore", systemImage: "globe")
-                    }.environmentObject(session)
+                    }.environmentObject(session).tag("explore")
                     Messages(messagesState: messagesState, page: 1).environmentObject(session).tabItem {
                         Label("Messages", systemImage: "envelope")
-                    }.badge(messagesState.unread.count)
+                    }.badge(messagesState.unread.count).tag("messages")
                     User(name: session.name, navigationType: "tab").tabItem {
                         Label("Your Profile", systemImage: "person")
-                    }.environmentObject(session)
+                    }.environmentObject(session).tag("profile")
                     Settings().tabItem {
                         Label("Settings", systemImage: "gear")
-                    }.environmentObject(session)
+                    }.environmentObject(session).tag("settings")
                 }
                 VStack {
                     Spacer()
