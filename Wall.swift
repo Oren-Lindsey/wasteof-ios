@@ -13,6 +13,7 @@ struct Wall: View {
     @StateObject var wallFeed: WallObject = WallObject()
     @State var checkedComments = false
     @State var page = 1
+    var color: Color?
     var profileColor: Color {
         switch session.color {
         case "red":
@@ -78,7 +79,7 @@ struct Wall: View {
                         } label: {
                             Image(systemName: "text.bubble")
                             Text("Show more")
-                        }.buttonStyle(.bordered).tint(profileColor)
+                        }.buttonStyle(.bordered).tint(color ?? profileColor)
                     }
                 } else {
                     Text("No comments yet :(")

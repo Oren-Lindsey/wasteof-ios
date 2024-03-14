@@ -29,7 +29,6 @@ struct Settings: View {
     @State var tabSelection = "feed"
     let defaults = UserDefaults.standard
     var body: some View {
-        ScrollView {
             NavigationView {
                 Form {
                     Section(header: Text("Startup")) {
@@ -82,5 +81,4 @@ struct Settings: View {
                 }.navigationTitle("Settings")
             }
         }
-    }
 }

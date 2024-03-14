@@ -55,8 +55,6 @@ struct User: View {
         }
     }
     var body: some View {
-        let historyObject = userData.history ?? History(joined: 0)
-        let time = historyObject.joined
         if userData.id == "" {
             loader
         } else {
@@ -67,14 +65,15 @@ struct User: View {
                             .frame(height: 4)
                             .foregroundColor(profileColor),
                         alignment: .bottom).ignoresSafeArea()
+                    stats
                     HStack {
                         NavigationStack {
                             NavigationLink {
-                                Wall(username: userData.name).environmentObject(session)
+                                Wall(username: userData.name, color: profileColor).environmentObject(session)
                             } label: {
                                 Label("Wall", systemImage: "person.bubble")
-                            }.buttonStyle(.bordered)
-                        }
+                            }.buttonStyle(.bordered).tint(profileColor)
+                        }.padding([.horizontal])
                         Spacer()
                     }
                     if $userPosts.posts.count < 1 && userPosts.last == false {
@@ -151,6 +150,45 @@ struct User: View {
             }
         }
     }
+    @ViewBuilder private var stats: some View {
+        let historyObject = userData.history ?? History(joined: 0)
+        let time = historyObject.joined
+        let jointime: Date = Date(timeIntervalSince1970: TimeInterval(time / 1000))
+        let dateresult = jointime.isBetween(Date(timeIntervalSince1970: TimeInterval(1623470400)), Date(timeIntervalSince1970: TimeInterval(1639285200)))
+        if userData.name == session.name {
+            TextField("Edit bio", text: $editBio).textFieldStyle(.roundedBorder).overlay(
+                RoundedRectangle(cornerRadius: 8).stroke(Color.gray)).submitLabel(.done).padding([.horizontal], 5).onSubmit {
+                    updateBio(name: session.name, content: editBio, token: session.token) { (response) in
+                        userData.bio = response.bio
+                    }
+                }
+            } else {
+                if userData.bio.count > 0 {
+                    Text("\"\(userData.bio)\"").font(.callout).padding(1).foregroundColor(.white)
+                }
+            }
+            Spacer()
+            HStack {
+                if jointime.timeIntervalSince1970 > 1 {
+                    VStack {
+                        Label(jointime.formatted(date: .numeric, time: .omitted), systemImage: "clock").bold()
+                        Text("joined")
+                    }.padding(8).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                }
+                VStack {
+                    Label("\(userData.stats.followers)", systemImage: "person").bold()
+                    Text("followers")
+                }.padding(8).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                VStack {
+                    Label("\(userData.stats.following)", systemImage: "person").bold()
+                    Text("following")
+                }.padding(8).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                VStack {
+                    Label("\(userData.stats.posts)", systemImage: "note.text").bold()
+                    Text("posts")
+                }.padding(8).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            }
+    }
     @ViewBuilder private var header: some View {
         let historyObject = userData.history ?? History(joined: 0)
         let time = historyObject.joined
@@ -172,18 +210,18 @@ struct User: View {
                         .aspectRatio(contentMode: .fill)
                         .ignoresSafeArea()
                         .opacity(0.8)
-                        .frame(maxWidth: UIScreen.main.bounds.width)
+                        .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: navigationType == "stack" ? 200 : 150)
                         .shadow(radius: 8)
-                        //.clipped()
                 case .failure:
                     EmptyView()
                 @unknown default:
                     EmptyView()
                 }
-            }.ignoresSafeArea()
+            }.ignoresSafeArea().clipped().frame(maxHeight: navigationType == "stack" ? 200 : 150)
                 VStack {
                     HStack {
                         VStack {
+                            
                             AsyncImage(
                                 url: URL(string: "https://api.wasteof.money/users/\(userData.name)/picture"),
                                 transaction: Transaction(animation: .easeInOut)
@@ -211,9 +249,12 @@ struct User: View {
                             .padding([.leading])
                             Spacer()
                         }
-                        VStack {
-                            HStack {
+                            VStack {
+                                HStack {
                                     Text("@\(userData.name)").font(.largeTitle)
+                                    Spacer()
+                                }
+                                HStack {
                                     if userData.verified {
                                         Image(systemName: "checkmark.seal.fill")
                                     }
@@ -230,37 +271,12 @@ struct User: View {
                                             Image(systemName: "crown")
                                         }
                                     }
-                                Spacer()
-                            }
-                            if jointime.timeIntervalSince1970 > 1 {
-                                HStack {
-                                    Label("Joined \(jointime.formatted(date: .numeric, time: .omitted))", systemImage: "clock")
                                     Spacer()
                                 }
-                            }
-                            if checkedFollowsYou {
-                                if followsYou {
-                                    HStack {
-                                        Label("Follows you", systemImage: "checkmark").italic()
-                                        Spacer()
-                                    }
-                                } else {
-                                    EmptyView()
-                                }
-                            } else {
-                                ProgressView().onAppear() {
-                                    checkFollowing(name: session.name, sessionName: userData.name) { (result) in
-                                        followsYou = result
-                                        checkedFollowsYou = true
-                                    }
-                               }
-                            }
-                            Spacer()
+                                Spacer()
                         }
-                        //Spacer()
                         VStack {
                             if following {
-                                ZStack {
                                     Button {
                                         followUser(name: userData.name, token: session.token) { (result) in
                                             userData.stats.followers = result.new.followers
@@ -270,7 +286,6 @@ struct User: View {
                                     } label: {
                                         Label("Unfollow", systemImage: "person.badge.plus")
                                     }.tint(profileColor).buttonStyle(.bordered).background(RoundedRectangle(cornerRadius: 8, style: .continuous).foregroundColor(.black).opacity(0.5))
-                                }
                             } else {
                                 Button {
                                     followUser(name: userData.name, token: session.token) { (result) in
@@ -286,38 +301,26 @@ struct User: View {
                                     }
                                 }
                             }
+                            if checkedFollowsYou {
+                                if followsYou {
+                                    Label("Follows you", systemImage: "checkmark")
+                                } else {
+                                    Label("Does not follow you", systemImage: "circle.slash")
+                                }
+                            } else {
+                                ProgressView().onAppear() {
+                                    checkFollowing(name: session.name, sessionName: userData.name) { (result) in
+                                        followsYou = result
+                                        checkedFollowsYou = true
+                                    }
+                                }
+                            }
                             Spacer()
                         }
                         Spacer()
-                    }.padding([.top], navigationType == "stack" ? 105 : 60)
-                    if userData.name == session.name {
-                        TextField("Edit bio", text: $editBio).textFieldStyle(.roundedBorder).submitLabel(.done).padding([.horizontal], 5).onSubmit {
-                                updateBio(name: session.name, content: editBio, token: session.token) { (response) in
-                                    userData.bio = response.bio
-                                }
-                            }
-                        } else {
-                            if userData.bio.count > 0 {
-                                Text("\"\(userData.bio)\"").font(.callout).padding(1).foregroundColor(.white)
-                            }
-                        }
-                        Spacer()
-                    HStack {
-                        VStack {
-                            Label("\(userData.stats.followers)", systemImage: "person").bold()
-                            Text("followers")
-                        }.padding(10).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                        VStack {
-                            Label("\(userData.stats.following)", systemImage: "person").bold()
-                            Text("following")
-                        }.padding(10).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                        VStack {
-                            Label("\(userData.stats.posts)", systemImage: "note.text").bold()
-                            Text("posts")
-                        }.padding(10).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    }.padding([.horizontal, .bottom], 10)
-                }
+                    }.padding([.top], navigationType == "stack" ? 105 : 60).background(.ultraThinMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
         }.frame(maxWidth: .infinity, maxHeight: .infinity).ignoresSafeArea()
+        }
     }
 }
 public extension Date {

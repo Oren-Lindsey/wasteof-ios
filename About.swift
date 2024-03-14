@@ -37,7 +37,7 @@ struct About: View {
                 Button {
                     showToken.toggle()
                 } label: {
-                    Label("Show token", systemImage: "lock")
+                    Label("Show token", systemImage: "lock.open")
                 }.buttonStyle(.bordered)
             }
             Spacer()
