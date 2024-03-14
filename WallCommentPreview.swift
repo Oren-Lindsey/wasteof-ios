@@ -108,7 +108,7 @@ struct WallCommentPreview: View {
                     }
                     RichText(html: content).multilineTextAlignment(.leading)
                     HStack {
-                        WallCommentButton(type: "reply", username: wall.name, parent: id).onPost {
+                        WallCommentButton(type: "reply", username: wall.name, parent: id, color: profileColor).onPost {
                             print("posted a new comment!")
                             getReplies(commentId: id) { (repliesResults) in
                                 DispatchQueue.main.async {

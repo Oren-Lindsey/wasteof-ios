@@ -69,7 +69,7 @@ struct CommentPreview: View {
                                     }.padding(6).buttonStyle(PlainButtonStyle()).background(.regularMaterial,in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                                     Spacer()
                                     if parentPoster != nil {
-                                        Text("Replying to @\(parentPoster?.name ?? "")")
+                                        Text("Replying to @\(parentPoster?.name ?? "")").tint(profileColor)
                                     }
                                 }
                             }
@@ -122,7 +122,7 @@ struct CommentPreview: View {
                 VStack {
                     ForEach(replies.comments.indices, id: \.self) {i in
                         if recursion < 3 || showMore {
-                            CommentPreview(postId: postId, _id: replies.comments[i]._id, /*post: replies.comments[i].post,*/ poster: replies.comments[i].poster, /*parent: replies.comments[i].parent,*/ parentPoster: poster, content: replies.comments[i].content, time: replies.comments[i].time, hasReplies: replies.comments[i].hasReplies, profileColor: profileColor, recursion: recursion + 1).frame(maxWidth: 300).environmentObject(session)
+                            CommentPreview(postId: postId, _id: replies.comments[i]._id, poster: replies.comments[i].poster, parentPoster: poster, content: replies.comments[i].content, time: replies.comments[i].time, hasReplies: replies.comments[i].hasReplies, profileColor: profileColor, recursion: recursion + 1).frame(maxWidth: 300).environmentObject(session)
                             Spacer()
                         } else {
                             Button {

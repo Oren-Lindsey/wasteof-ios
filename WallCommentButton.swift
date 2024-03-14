@@ -15,7 +15,8 @@ struct WallCommentButton: View {
     let type: String
     let username: String
     let parent: Optional<String>
-    var color: Color {
+    let color: Color
+    /*var color: Color {
         switch session.color {
         case "red":
             return Color.red
@@ -44,7 +45,7 @@ struct WallCommentButton: View {
         default:
             return Color.green
         }
-    }
+    }*/
     var body: some View {
         Button {
             editor = true
@@ -92,7 +93,7 @@ struct WallCommentButton: View {
         }.padding(5)
     }
     func onPost(_ callback: @escaping () -> ()) -> some View {
-        WallCommentButton(onPost: callback, type: type, username: username, parent: parent)
+        WallCommentButton(onPost: callback, type: type, username: username, parent: parent, color: color)
         }
 }
 struct CommentResponse: Codable {

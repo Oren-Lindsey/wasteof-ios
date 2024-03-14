@@ -46,7 +46,7 @@ struct Wall: View {
     }
     var body: some View {
         ScrollView {
-            WallCommentButton(type: "comment", username: username, parent: nil).onPost {
+            WallCommentButton(type: "comment", username: username, parent: nil, color: profileColor).onPost {
                 page = 1
                 checkedComments = false
             }
@@ -85,7 +85,7 @@ struct Wall: View {
                     Text("No comments yet :(")
                 }
             }
-        }.navigationTitle("\(username)'s Wall").refreshable {
+        }.navigationTitle("@\(username)'s Wall").refreshable {
             page = 1
             fetchWall(user: username, page: page) { (results) in
                 DispatchQueue.main.async {
