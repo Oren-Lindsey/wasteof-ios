@@ -31,6 +31,13 @@ struct Settings: View {
     var body: some View {
             NavigationView {
                 Form {
+                    Section(header: Text("App Icon")) {
+                        NavigationLink {
+                            iconChooser.navigationTitle("Choose Icon")
+                        } label: {
+                            Text("Choose Icon")
+                        }
+                    }
                     Section(header: Text("Startup")) {
                         Picker("Startup Tab", selection: $tabSelection) {
                             Text("Feed").tag("feed")
@@ -81,4 +88,35 @@ struct Settings: View {
                 }.navigationTitle("Settings")
             }
         }
+    @ViewBuilder private var iconChooser: some View {
+        List {
+            Button {
+                changeAppIcon(to: "AppIcon")
+            } label: {
+                Text("Original")
+            }
+            Button {
+                changeAppIcon(to: "IndigoIcon")
+            } label: {
+                Text("Indigo")
+            }
+            Button {
+                changeAppIcon(to: "CenteredIcon")
+            } label: {
+                Text("Centered")
+            }
+            Button {
+                changeAppIcon(to: "CenteredIndigo")
+            } label: {
+                Text("Centered Indigo")
+            }
+        }
+    }
+    private func changeAppIcon(to iconName: String) {
+        UIApplication.shared.setAlternateIconName(iconName) { error in
+            if let error = error {
+                print("Error setting alternate icon \(error.localizedDescription)")
+            }
+        }
+    }
 }
